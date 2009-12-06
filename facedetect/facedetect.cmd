@@ -1,0 +1,1 @@
+facedetect --cascade="../haarcascades/haarcascade_frontalface_alt.xml" --nested-cascade="../haarcascades/haarcascade_eye.xml" --scale=4 %1
