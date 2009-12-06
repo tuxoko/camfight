@@ -21,7 +21,16 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="$(#cv)\include\" />
+			<Add directory="$(#cv)\include\opencv" />
 		</Compiler>
+		<Linker>
+			<Add library="cv200" />
+			<Add library="cxcore200" />
+			<Add library="highgui200" />
+			<Add directory="$(#cv)\lib" />
+		</Linker>
+		<Unit filename="facedetect.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
