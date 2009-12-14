@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="camfight">
-		<Project filename="facedetect\facedetect.cbp" active="1" />
+		<Project filename="facedetect\facedetect.cbp" />
+		<Project filename="camshiftdemo\camshiftdemo.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>
