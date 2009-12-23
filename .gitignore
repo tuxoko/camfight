@@ -4,4 +4,6 @@ facedetect/facedetect.layout
 camshiftdemo/camshiftdemo.exe
 camshiftdemo/obj/*
 camshiftdemo/camshiftdemo.layout
+cstest/obj/*
+cstest/bin/*
 

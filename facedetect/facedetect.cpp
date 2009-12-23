@@ -35,7 +35,7 @@ int main( int argc, const char** argv )
     String inputName;
 
     CascadeClassifier cascade, nestedCascade;
-    double scale = 1;
+    double scale = 4;
 
     for( int i = 1; i < argc; i++ )
     {
