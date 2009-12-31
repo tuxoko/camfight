@@ -32,6 +32,7 @@
             this.captureImageBox = new Emgu.CV.UI.ImageBox();
             this.captureButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             ((System.ComponentModel.ISupportInitialize)(this.captureImageBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -63,11 +64,19 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "WebCam視訊";
             // 
+            // histogramBox1
+            // 
+            this.histogramBox1.Location = new System.Drawing.Point(671, 96);
+            this.histogramBox1.Name = "histogramBox1";
+            this.histogramBox1.Size = new System.Drawing.Size(515, 377);
+            this.histogramBox1.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(671, 582);
+            this.ClientSize = new System.Drawing.Size(1279, 582);
+            this.Controls.Add(this.histogramBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.captureButton);
             this.Controls.Add(this.captureImageBox);
@@ -84,6 +93,7 @@
         private Emgu.CV.UI.ImageBox captureImageBox;
         private System.Windows.Forms.Button captureButton;
         private System.Windows.Forms.Label label1;
+        private Emgu.CV.UI.HistogramBox histogramBox1;
 
 
     }

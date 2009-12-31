@@ -20,67 +20,120 @@ namespace cstest
         public Form1()
         {
             InitializeComponent();
-            _haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt2.xml");
+            _haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt_tree.xml");
+            histogramBox1.Show();
         }
 
-            private Capture _capture;
-            private bool _captureInProgress;
-            private HaarCascade _haar;
-            
+        private Capture _capture;
+        private bool _captureInProgress;
+        private HaarCascade _haar;
+        private static RangeF mrangef=new RangeF(0,180);
+        private DenseHistogram _hist = new DenseHistogram(16, mrangef);
+        private bool isTracked = false;
 
-            private void ProcessFrame(object sender, EventArgs arg)
+        private Image<Hsv, Byte> hsv = null;
+        private Image<Gray, Byte> hue = null;
+        private Image<Gray, Byte> mask = null;
+        private Image<Gray, Byte> backproject =null;
+        private IntPtr[] imgs = null;
+        private Rectangle track_window;
+        private MCvConnectedComp track_comp = new MCvConnectedComp();
+        private MCvBox2D track_box = new MCvBox2D();
+
+
+        private void ProcessFrame(object sender, EventArgs arg)
+        {
+            Image<Bgr, Byte> frame = _capture.QueryFrame();
+            if (isTracked == false)
             {
-                Image<Bgr, Byte> frame = _capture.QueryFrame();
-                
-                var faces = frame.DetectHaarCascade(_haar, 1.4, 4,HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT|HAAR_DETECTION_TYPE.SCALE_IMAGE, new Size(40,40))[0];
-               
-            
-                foreach (var face in faces) 
-                {
-                    frame.Draw(face.rect, new Bgr(0, double.MaxValue, 0), 3); 
-                }
 
-                captureImageBox.Image = frame;
-                /*
-                // 請再加上以下四行程式碼
-                Image<Gray, Byte> grayFrame = frame.Convert<Gray, Byte>();
-                Image<Gray, Byte> cannyFrame = grayFrame.Canny(new Gray(100), new Gray(60));
-                grayscaleImageBox.Image = grayFrame;
-                cannyImageBox.Image = cannyFrame;*/
+                //hsv = cvCreateImage( cvGetSize(frame), 8, 3 );
+                //hue = cvCreateImage( cvGetSize(frame), 8, 1 );
+                //mask = cvCreateImage( cvGetSize(frame), 8, 1 );
+                //backproject = cvCreateImage(cvGetSize(frame), 8, 1);
+                hsv = new Image<Hsv, byte>(frame.Width, frame.Height);
+                hsv = frame.Convert<Hsv, Byte>();
+                hue = new Image<Gray, byte>(frame.Width, frame.Height);
+                mask = new Image<Gray, byte>(frame.Width, frame.Height);
+                backproject = new Image<Gray, byte>(frame.Width, frame.Height);
+
+                Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
+                Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+
+                var faces = frame.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
+
+
+                foreach (var face in faces)
+                {
+                    //frame.Draw(face.rect, new Bgr(0, double.MaxValue, 0), 3);
+
+                    Emgu.CV.CvInvoke.cvSetImageROI(hue, face.rect);
+                    Emgu.CV.CvInvoke.cvSetImageROI(mask, face.rect);
+
+                    imgs = new IntPtr[1] { hue };
+
+                    Emgu.CV.CvInvoke.cvCalcHist(imgs, _hist, false, mask);
+
+                    Emgu.CV.CvInvoke.cvResetImageROI(hue);
+                    Emgu.CV.CvInvoke.cvResetImageROI(mask);
+
+                    histogramBox1.ClearHistogram();
+                    histogramBox1.AddHistogram("test", Color.Blue, _hist);
+                    histogramBox1.Refresh();
+
+                    isTracked = true;
+                    track_window = face.rect;
+                }
             }
-
-            private void captureButton_Click(object sender, EventArgs e)
+            else
             {
-                #region if capture is not created, create it now
-                if (_capture == null)
-                {
-                    try
-                    {
-                        _capture = new Capture();
-                    }
-                    catch (NullReferenceException excpt)
-                    {
-                        MessageBox.Show(excpt.Message);
-                    }
-                }
-                #endregion
+                hsv = frame.Convert<Hsv, Byte>();
+                Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
+                Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+            }
+            imgs = new IntPtr[1] { hue };
+            Emgu.CV.CvInvoke.cvCalcBackProject(imgs, backproject, _hist);
+            Emgu.CV.CvInvoke.cvAnd(backproject,mask,backproject,IntPtr.Zero);
+            if (track_window.Width == 0) track_window.Width = 40;
+            if (track_window.Height == 0) track_window.Height = 40;
+            Emgu.CV.CvInvoke.cvCamShift(backproject,track_window,new MCvTermCriteria(10,0.5),out track_comp,out track_box);
+            track_window = track_comp.rect;
+            frame.Draw(track_window, new Bgr(0, double.MaxValue, 0), 3);
+            captureImageBox.Image = frame;
 
-                if (_capture != null)
-                {
-                    if (_captureInProgress)
-                    {  //stop the capture
-                        Application.Idle -= new EventHandler(ProcessFrame);
-                        captureButton.Text = "Start Capture";
-                    }
-                    else
-                    {
-                        //start the capture
-                        captureButton.Text = "Stop";
-                        Application.Idle += new EventHandler(ProcessFrame);
-                    }
+        }
 
-                    _captureInProgress = !_captureInProgress;
+        private void captureButton_Click(object sender, EventArgs e)
+        {
+            #region if capture is not created, create it now
+            if (_capture == null)
+            {
+                try
+                {
+                    _capture = new Capture();
                 }
+                catch (NullReferenceException excpt)
+                {
+                    MessageBox.Show(excpt.Message);
+                }
+            }
+            #endregion
+
+            if (_capture != null)
+            {
+                if (_captureInProgress)
+                {  //stop the capture
+                    Application.Idle -= new EventHandler(ProcessFrame);
+                    captureButton.Text = "Start Capture";
+                }
+                else
+                {
+                   //start the capture
+                    captureButton.Text = "Stop";
+                    Application.Idle += new EventHandler(ProcessFrame);
+                }
+
+                _captureInProgress = !_captureInProgress;              }
             }
         }
 }
