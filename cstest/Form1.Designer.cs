@@ -33,15 +33,18 @@
             this.captureButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
+            this.imageBox1 = new Emgu.CV.UI.ImageBox();
+            this.back_project = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.captureImageBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // captureImageBox
             // 
             this.captureImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.captureImageBox.Location = new System.Drawing.Point(12, 96);
+            this.captureImageBox.Location = new System.Drawing.Point(12, 72);
             this.captureImageBox.Name = "captureImageBox";
-            this.captureImageBox.Size = new System.Drawing.Size(640, 480);
+            this.captureImageBox.Size = new System.Drawing.Size(653, 411);
             this.captureImageBox.TabIndex = 2;
             this.captureImageBox.TabStop = false;
             // 
@@ -58,7 +61,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(144, 72);
+            this.label1.Location = new System.Drawing.Point(144, 43);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(73, 12);
             this.label1.TabIndex = 4;
@@ -66,16 +69,35 @@
             // 
             // histogramBox1
             // 
-            this.histogramBox1.Location = new System.Drawing.Point(671, 96);
+            this.histogramBox1.Location = new System.Drawing.Point(746, 424);
             this.histogramBox1.Name = "histogramBox1";
-            this.histogramBox1.Size = new System.Drawing.Size(515, 377);
+            this.histogramBox1.Size = new System.Drawing.Size(391, 165);
             this.histogramBox1.TabIndex = 5;
+            // 
+            // imageBox1
+            // 
+            this.imageBox1.Location = new System.Drawing.Point(671, 72);
+            this.imageBox1.Name = "imageBox1";
+            this.imageBox1.Size = new System.Drawing.Size(575, 346);
+            this.imageBox1.TabIndex = 2;
+            this.imageBox1.TabStop = false;
+            // 
+            // back_project
+            // 
+            this.back_project.AutoSize = true;
+            this.back_project.Location = new System.Drawing.Point(900, 43);
+            this.back_project.Name = "back_project";
+            this.back_project.Size = new System.Drawing.Size(65, 12);
+            this.back_project.TabIndex = 6;
+            this.back_project.Text = "back_project";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1279, 582);
+            this.Controls.Add(this.back_project);
+            this.Controls.Add(this.imageBox1);
             this.Controls.Add(this.histogramBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.captureButton);
@@ -83,6 +105,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.captureImageBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -94,6 +117,8 @@
         private System.Windows.Forms.Button captureButton;
         private System.Windows.Forms.Label label1;
         private Emgu.CV.UI.HistogramBox histogramBox1;
+        private Emgu.CV.UI.ImageBox imageBox1;
+        private System.Windows.Forms.Label back_project;
 
 
     }

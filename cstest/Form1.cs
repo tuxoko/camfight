@@ -20,7 +20,7 @@ namespace cstest
         public Form1()
         {
             InitializeComponent();
-            _haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt_tree.xml");
+            _haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt2.xml");
             histogramBox1.Show();
         }
 
@@ -39,6 +39,7 @@ namespace cstest
         private Rectangle track_window;
         private MCvConnectedComp track_comp = new MCvConnectedComp();
         private MCvBox2D track_box = new MCvBox2D();
+        private Rectangle head_rect;
 
 
         private void ProcessFrame(object sender, EventArgs arg)
@@ -60,7 +61,7 @@ namespace cstest
                 Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
                 Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
-                var faces = frame.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
+                var faces = frame.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.SCALE_IMAGE, new Size(40, 40))[0];
 
 
                 foreach (var face in faces)
@@ -82,7 +83,7 @@ namespace cstest
                     histogramBox1.Refresh();
 
                     isTracked = true;
-                    track_window = face.rect;
+                    //track_window = face.rect;
                 }
             }
             else
@@ -90,10 +91,38 @@ namespace cstest
                 hsv = frame.Convert<Hsv, Byte>();
                 Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
                 Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+
+                imgs = new IntPtr[1] { hue };
+                Emgu.CV.CvInvoke.cvCalcBackProject(imgs, backproject, _hist);
+                Emgu.CV.CvInvoke.cvAnd(backproject, mask, backproject, IntPtr.Zero); 
+
+                var faces = backproject.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
+
+
+                foreach (var face in faces)
+                {
+                    head_rect = face.rect;
+                    frame.Draw(face.rect,new Bgr(255,0,0),3);
+                }
             }
-            imgs = new IntPtr[1] { hue };
-            Emgu.CV.CvInvoke.cvCalcBackProject(imgs, backproject, _hist);
-            Emgu.CV.CvInvoke.cvAnd(backproject,mask,backproject,IntPtr.Zero);
+
+
+            
+
+            
+            
+           
+            //ignore head region
+            Emgu.CV.CvInvoke.cvSetImageROI(backproject, head_rect);
+
+            try
+            {
+                Emgu.CV.CvInvoke.cvZero(backproject);
+            }
+            catch { }
+            Emgu.CV.CvInvoke.cvResetImageROI(backproject);
+
+
             if (track_window.Width == 0) track_window.Width = 40;
             if (track_window.Height == 0) track_window.Height = 40;
             Emgu.CV.CvInvoke.cvCamShift(backproject,track_window,new MCvTermCriteria(10,0.5),out track_comp,out track_box);
@@ -101,6 +130,9 @@ namespace cstest
             frame.Draw(track_window, new Bgr(0, double.MaxValue, 0), 3);
             captureImageBox.Image = frame;
 
+            imageBox1.Image = backproject;
+            
+            
         }
 
         private void captureButton_Click(object sender, EventArgs e)
