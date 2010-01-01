@@ -47,6 +47,7 @@ namespace cstest
         private void ProcessFrame(object sender, EventArgs arg)
         {
             Image<Bgr, Byte> frame = _capture.QueryFrame();
+            
             if (isTracked == false)
             {
 
@@ -63,14 +64,14 @@ namespace cstest
                 Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
                 Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
-                var faces = frame.DetectHaarCascade(_haar, 2, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.SCALE_IMAGE, new Size(40, 40))[0];
+                var faces = frame.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.SCALE_IMAGE, new Size(40, 40))[0];
 
 
                 foreach (var face in faces)
                 {
                     //frame.Draw(face.rect, new Bgr(0, double.MaxValue, 0), 3);
 
-                    Rectangle roi = new Rectangle(face.rect.X + face.rect.Width / 4, face.rect.Y + face.rect.Height / 4, face.rect.Width / 2, face.rect.Height / 2);
+                    Rectangle roi = new Rectangle(face.rect.X + face.rect.Width / 8, face.rect.Y + face.rect.Height / 8, face.rect.Width / 4, face.rect.Height / 4);
 
                     Emgu.CV.CvInvoke.cvSetImageROI(hue, roi);
                     Emgu.CV.CvInvoke.cvSetImageROI(mask, roi);
@@ -98,9 +99,11 @@ namespace cstest
 
                 imgs = new IntPtr[1] { hue };
                 Emgu.CV.CvInvoke.cvCalcBackProject(imgs, backproject, _hist);
-                Emgu.CV.CvInvoke.cvAnd(backproject, mask, backproject, IntPtr.Zero); 
+                Emgu.CV.CvInvoke.cvAnd(backproject, mask, backproject, IntPtr.Zero);
 
-                var faces = frame.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
+                Image<Gray, Byte> gray = frame.Convert<Gray, Byte>();
+
+                var faces = gray.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
 
 
                 foreach (var face in faces)
