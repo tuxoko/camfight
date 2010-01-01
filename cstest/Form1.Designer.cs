@@ -69,7 +69,7 @@
             // 
             // histogramBox1
             // 
-            this.histogramBox1.Location = new System.Drawing.Point(746, 424);
+            this.histogramBox1.Location = new System.Drawing.Point(771, 520);
             this.histogramBox1.Name = "histogramBox1";
             this.histogramBox1.Size = new System.Drawing.Size(391, 165);
             this.histogramBox1.TabIndex = 5;
@@ -78,7 +78,7 @@
             // 
             this.imageBox1.Location = new System.Drawing.Point(671, 72);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(575, 346);
+            this.imageBox1.Size = new System.Drawing.Size(575, 411);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             // 
@@ -95,7 +95,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1279, 582);
+            this.ClientSize = new System.Drawing.Size(1279, 697);
             this.Controls.Add(this.back_project);
             this.Controls.Add(this.imageBox1);
             this.Controls.Add(this.histogramBox1);

@@ -41,6 +41,8 @@ namespace cstest
         private MCvBox2D track_box = new MCvBox2D();
         private Rectangle head_rect;
 
+        private bool handtrack=false;
+
 
         private void ProcessFrame(object sender, EventArgs arg)
         {
@@ -61,15 +63,17 @@ namespace cstest
                 Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
                 Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
-                var faces = frame.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.SCALE_IMAGE, new Size(40, 40))[0];
+                var faces = frame.DetectHaarCascade(_haar, 2, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.SCALE_IMAGE, new Size(40, 40))[0];
 
 
                 foreach (var face in faces)
                 {
                     //frame.Draw(face.rect, new Bgr(0, double.MaxValue, 0), 3);
 
-                    Emgu.CV.CvInvoke.cvSetImageROI(hue, face.rect);
-                    Emgu.CV.CvInvoke.cvSetImageROI(mask, face.rect);
+                    Rectangle roi = new Rectangle(face.rect.X + face.rect.Width / 4, face.rect.Y + face.rect.Height / 4, face.rect.Width / 2, face.rect.Height / 2);
+
+                    Emgu.CV.CvInvoke.cvSetImageROI(hue, roi);
+                    Emgu.CV.CvInvoke.cvSetImageROI(mask, roi);
 
                     imgs = new IntPtr[1] { hue };
 
@@ -96,7 +100,7 @@ namespace cstest
                 Emgu.CV.CvInvoke.cvCalcBackProject(imgs, backproject, _hist);
                 Emgu.CV.CvInvoke.cvAnd(backproject, mask, backproject, IntPtr.Zero); 
 
-                var faces = backproject.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
+                var faces = frame.DetectHaarCascade(_haar, 1.4, 4, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
 
 
                 foreach (var face in faces)
@@ -122,12 +126,40 @@ namespace cstest
             catch { }
             Emgu.CV.CvInvoke.cvResetImageROI(backproject);
 
+            if (handtrack == false)
+            {
+                int mx = 0, my = 0;
 
-            if (track_window.Width == 0) track_window.Width = 40;
-            if (track_window.Height == 0) track_window.Height = 40;
-            Emgu.CV.CvInvoke.cvCamShift(backproject,track_window,new MCvTermCriteria(10,0.5),out track_comp,out track_box);
-            track_window = track_comp.rect;
-            frame.Draw(track_window, new Bgr(0, double.MaxValue, 0), 3);
+                MCvMoments mom = backproject.GetMoments(false);
+                if (mom.m00 > 2500000)
+                {
+                    mx = (int)mom.GravityCenter.x;
+                    my = (int)mom.GravityCenter.y;
+                }
+                else
+                {
+                    mx = 0;
+                    my = 0;
+                }
+                frame.Draw(new Rectangle(mx - 5, my - 5, 10, 10), new Bgr(0, double.MaxValue, 0), 3);
+                if (mx != 0 || my != 0)
+                {
+                    track_window = new Rectangle(mx - 10, my - 10, 20, 20);
+                    handtrack = true;
+                }
+            }
+            else
+            {
+                if (track_window.Width == 0) track_window.Width = 40;
+                if (track_window.Height == 0) track_window.Height = 40; 
+
+                Emgu.CV.CvInvoke.cvCamShift(backproject,track_window,new MCvTermCriteria(10,0.5),out track_comp,out track_box);
+                track_window = track_comp.rect;
+
+
+
+                frame.Draw(track_window, new Bgr(0, double.MaxValue, 0), 3);
+            }
             captureImageBox.Image = frame;
 
             imageBox1.Image = backproject;
