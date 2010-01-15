@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -20,12 +21,16 @@ namespace cstest
         public Form1()
         {
             InitializeComponent();
-            _haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt2.xml");
+            //_haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt2.xml");
+            FPU = new FrameProcessor();
+            sw = new Stopwatch();
             histogramBox1.Show();
         }
-
+        private Stopwatch sw;
+        private FrameProcessor FPU;
         private Capture _capture;
         private bool _captureInProgress;
+        /*
         private HaarCascade _haar;
         private static RangeF mrangef=new RangeF(0,180);
         private DenseHistogram _hist = new DenseHistogram(16, mrangef);
@@ -41,13 +46,14 @@ namespace cstest
         private MCvBox2D track_box = new MCvBox2D();
         private Rectangle head_rect;
 
-        private bool handtrack=false;
+        private bool handtrack=false;*/
 
 
         private void ProcessFrame(object sender, EventArgs arg)
         {
             Image<Bgr, Byte> frame = _capture.QueryFrame();
-            
+            #region old
+            /*
             if (isTracked == false)
             {
 
@@ -83,9 +89,7 @@ namespace cstest
                     Emgu.CV.CvInvoke.cvResetImageROI(hue);
                     Emgu.CV.CvInvoke.cvResetImageROI(mask);
 
-                    histogramBox1.ClearHistogram();
-                    histogramBox1.AddHistogram("test", Color.Blue, _hist);
-                    histogramBox1.Refresh();
+
 
                     isTracked = true;
                     //track_window = face.rect;
@@ -162,12 +166,28 @@ namespace cstest
 
 
                 frame.Draw(track_window, new Bgr(0, double.MaxValue, 0), 3);
-            }
-            captureImageBox.Image = frame;
+            }*/
+            #endregion
+            FPU.ProcessFrame(frame);
 
-            imageBox1.Image = backproject;
-            
-            
+            frame.Draw(FPU.face, new Bgr(255,0,0), 3);
+
+            captureImageBox.Image = frame;
+            imageBox1.Image = FPU.backproject;
+
+            if (FPU.isTracked)
+            {
+                histogramBox1.ClearHistogram();
+                histogramBox1.AddHistogram("test", Color.Blue, FPU._hist);
+                histogramBox1.Refresh();
+            }
+            sw.Stop();
+            long t_interval = sw.ElapsedMilliseconds;
+
+            rtbLog.AppendText(String.Format("face {0} hue {1} back {2} hand {3} total {4} mass {5}\n", FPU.t_facedetect, FPU.t_hue, FPU.t_backproject,FPU.t_hand, t_interval,FPU.mass));
+            rtbLog.ScrollToCaret();
+            sw.Reset();
+            sw.Start();
         }
 
         private void captureButton_Click(object sender, EventArgs e)
@@ -196,11 +216,18 @@ namespace cstest
                 else
                 {
                    //start the capture
+                    FPU.Reset();
+                    sw.Reset();
                     captureButton.Text = "Stop";
                     Application.Idle += new EventHandler(ProcessFrame);
                 }
 
                 _captureInProgress = !_captureInProgress;              }
             }
+
+        private void imageBox1_Click(object sender, EventArgs e)
+        {
+
+        }
         }
 }

@@ -35,6 +35,7 @@
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.back_project = new System.Windows.Forms.Label();
+            this.rtbLog = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.captureImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.SuspendLayout();
@@ -81,6 +82,7 @@
             this.imageBox1.Size = new System.Drawing.Size(575, 411);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
+            this.imageBox1.Click += new System.EventHandler(this.imageBox1_Click);
             // 
             // back_project
             // 
@@ -91,11 +93,20 @@
             this.back_project.TabIndex = 6;
             this.back_project.Text = "back_project";
             // 
+            // rtbLog
+            // 
+            this.rtbLog.Location = new System.Drawing.Point(129, 528);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.Size = new System.Drawing.Size(294, 125);
+            this.rtbLog.TabIndex = 7;
+            this.rtbLog.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1279, 697);
+            this.Controls.Add(this.rtbLog);
             this.Controls.Add(this.back_project);
             this.Controls.Add(this.imageBox1);
             this.Controls.Add(this.histogramBox1);
@@ -119,6 +130,7 @@
         private Emgu.CV.UI.HistogramBox histogramBox1;
         private Emgu.CV.UI.ImageBox imageBox1;
         private System.Windows.Forms.Label back_project;
+        private System.Windows.Forms.RichTextBox rtbLog;
 
 
     }
