@@ -43,9 +43,9 @@
             // captureImageBox
             // 
             this.captureImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.captureImageBox.Location = new System.Drawing.Point(12, 72);
+            this.captureImageBox.Location = new System.Drawing.Point(12, 43);
             this.captureImageBox.Name = "captureImageBox";
-            this.captureImageBox.Size = new System.Drawing.Size(653, 411);
+            this.captureImageBox.Size = new System.Drawing.Size(640, 480);
             this.captureImageBox.TabIndex = 2;
             this.captureImageBox.TabStop = false;
             // 
@@ -62,7 +62,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(144, 43);
+            this.label1.Location = new System.Drawing.Point(193, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(73, 12);
             this.label1.TabIndex = 4;
@@ -70,16 +70,16 @@
             // 
             // histogramBox1
             // 
-            this.histogramBox1.Location = new System.Drawing.Point(771, 520);
+            this.histogramBox1.Location = new System.Drawing.Point(770, 529);
             this.histogramBox1.Name = "histogramBox1";
             this.histogramBox1.Size = new System.Drawing.Size(391, 165);
             this.histogramBox1.TabIndex = 5;
             // 
             // imageBox1
             // 
-            this.imageBox1.Location = new System.Drawing.Point(671, 72);
+            this.imageBox1.Location = new System.Drawing.Point(671, 43);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(575, 411);
+            this.imageBox1.Size = new System.Drawing.Size(640, 480);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             this.imageBox1.Click += new System.EventHandler(this.imageBox1_Click);
@@ -87,7 +87,7 @@
             // back_project
             // 
             this.back_project.AutoSize = true;
-            this.back_project.Location = new System.Drawing.Point(900, 43);
+            this.back_project.Location = new System.Drawing.Point(901, 16);
             this.back_project.Name = "back_project";
             this.back_project.Size = new System.Drawing.Size(65, 12);
             this.back_project.TabIndex = 6;
@@ -97,7 +97,7 @@
             // 
             this.rtbLog.Location = new System.Drawing.Point(129, 528);
             this.rtbLog.Name = "rtbLog";
-            this.rtbLog.Size = new System.Drawing.Size(294, 125);
+            this.rtbLog.Size = new System.Drawing.Size(294, 157);
             this.rtbLog.TabIndex = 7;
             this.rtbLog.Text = "";
             // 

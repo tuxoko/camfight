@@ -30,6 +30,7 @@ namespace cstest
         private FrameProcessor FPU;
         private Capture _capture;
         private bool _captureInProgress;
+        private bool drawhist;
         /*
         private HaarCascade _haar;
         private static RangeF mrangef=new RangeF(0,180);
@@ -170,21 +171,23 @@ namespace cstest
             #endregion
             FPU.ProcessFrame(frame);
 
-            frame.Draw(FPU.face, new Bgr(255,0,0), 3);
+            frame.Draw(FPU.face, new Bgr(255, 0, 0), 3);
 
             captureImageBox.Image = frame;
             imageBox1.Image = FPU.backproject;
 
-            if (FPU.isTracked)
+            if (drawhist && FPU.isTracked)
             {
                 histogramBox1.ClearHistogram();
                 histogramBox1.AddHistogram("test", Color.Blue, FPU._hist);
                 histogramBox1.Refresh();
+
+                drawhist = false;
             }
             sw.Stop();
             long t_interval = sw.ElapsedMilliseconds;
 
-            rtbLog.AppendText(String.Format("face {0} hue {1} back {2} hand {3} total {4} mass {5}\n", FPU.t_facedetect, FPU.t_hue, FPU.t_backproject,FPU.t_hand, t_interval,FPU.mass));
+            rtbLog.AppendText(String.Format("face {0} hue {1} back {2} hand {3} total {4} kmeans {5}\n", FPU.t_facedetect, FPU.t_hue, FPU.t_backproject, FPU.t_hand, t_interval, FPU.t_kmeans));
             rtbLog.ScrollToCaret();
             sw.Reset();
             sw.Start();
@@ -215,19 +218,21 @@ namespace cstest
                 }
                 else
                 {
-                   //start the capture
+                    //start the capture
                     FPU.Reset();
                     sw.Reset();
+                    drawhist = true;
                     captureButton.Text = "Stop";
                     Application.Idle += new EventHandler(ProcessFrame);
                 }
 
-                _captureInProgress = !_captureInProgress;              }
+                _captureInProgress = !_captureInProgress;
             }
+        }
 
         private void imageBox1_Click(object sender, EventArgs e)
         {
 
         }
-        }
+    }
 }

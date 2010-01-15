@@ -19,6 +19,11 @@ public class FrameProcessor
     private HaarCascade _haar;
     private Rectangle face_rect;
     private Stopwatch sw;
+    private bool th_check;
+
+    //some parameters
+    private int backproj_threshold=100;
+    private double kmeans_scale = 16;
 
     public bool isTracked = false;
     public DenseHistogram _hist;
@@ -35,6 +40,7 @@ public class FrameProcessor
     public long t_hue;
     public long t_backproject;
     public long t_hand;
+    public long t_kmeans;
 
     public FrameProcessor()
 	{
@@ -57,8 +63,6 @@ public class FrameProcessor
         Image<Gray, Byte> mask = new Image<Gray, byte>(frame.Width, frame.Height);
         Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
         Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-        sw.Stop();
-        t_hue = sw.ElapsedMilliseconds;
 
         if (isTracked == false)
         {
@@ -68,6 +72,7 @@ public class FrameProcessor
                 Rectangle smallFaceROI = new Rectangle(ff.rect.X + ff.rect.Width / 8, ff.rect.Y + ff.rect.Height / 8, ff.rect.Width / 4, ff.rect.Height / 4);
                 _hist = GetHist(hue, smallFaceROI, mask);
                 isTracked=true;
+                th_check = true;
             }
             else
             {
@@ -77,6 +82,9 @@ public class FrameProcessor
                 return;
             }
         }
+        sw.Stop();
+        t_hue = sw.ElapsedMilliseconds;
+
 
         if (faces.Length != 0)
         {
@@ -89,26 +97,28 @@ public class FrameProcessor
             face = face_rect;
             have_face = false;
         }
+
         sw.Reset();
         sw.Start();
-        backproject=GetBackproject(hue,_hist,mask,face_rect);
+        backproject = GetBackproject(hue, _hist, mask, face_rect).ThresholdToZero(new Gray(backproj_threshold));
         sw.Stop();
         t_backproject = sw.ElapsedMilliseconds;
 
         sw.Reset();
         sw.Start();
-        Emgu.CV.CvInvoke.cvSetImageROI(backproject, face_rect);
-        MCvMoments mom=backproject.GetMoments(false);
-        mass = mom.m00;
-        Emgu.CV.CvInvoke.cvResetImageROI(backproject);
+        Point[] center=new Point[2];
+        center = kmeans(backproject, face_rect, kmeans_scale);
+        foreach (Point p in center)
+        {
+            frame.Draw(new CircleF(p, 20f), new Bgr(Color.Red), 2);
+        }
         sw.Stop();
-        t_hand = sw.ElapsedMilliseconds;
-
+        t_kmeans = sw.ElapsedMilliseconds;
     }
 
     private MCvAvgComp[] FaceDetect(Image<Bgr, Byte> frame)
     {
-        return frame.Convert<Gray, Byte>().DetectHaarCascade(_haar, 1.2, 3, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT |
+        return frame.Convert<Gray, Byte>().DetectHaarCascade(_haar, 1.4, 1, HAAR_DETECTION_TYPE.FIND_BIGGEST_OBJECT |
             HAAR_DETECTION_TYPE.SCALE_IMAGE | HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(40, 40))[0];
     }
 
@@ -116,6 +126,7 @@ public class FrameProcessor
     {
         isTracked = false;
         face_rect = new Rectangle();
+        th_check = false;
     }
     private DenseHistogram GetHist(Image<Gray, Byte> hue, Rectangle ROI, Image<Gray, Byte> mask)
     {
@@ -141,15 +152,86 @@ public class FrameProcessor
         Emgu.CV.CvInvoke.cvCalcBackProject(imgs, backproject, _hist);
         Emgu.CV.CvInvoke.cvAnd(backproject, mask, backproject, IntPtr.Zero);
 
+        if (th_check)
+        {
+            backproject.ROI = face_rect;
+            if (backproject.GetAverage().Intensity < backproj_threshold/2)
+            {
+                isTracked = false;
+            }
+            th_check = false;
+            Emgu.CV.CvInvoke.cvResetImageROI(backproject);
+        }
+
         hide.Height += 50;
         Emgu.CV.CvInvoke.cvSetImageROI(backproject, hide);
         try
         {
-            //Emgu.CV.CvInvoke.cvZero(backproject);
+            Emgu.CV.CvInvoke.cvZero(backproject);
         }
         catch { }
         Emgu.CV.CvInvoke.cvResetImageROI(backproject);
 
         return backproject;
+    }
+
+    private Point[] kmeans(Image<Gray, Byte> img0, Rectangle face, double scale)
+    {
+
+        Image<Gray, Byte> img = img0.Resize(1/scale, INTER.CV_INTER_LINEAR);
+
+        Point[] center = new Point[2] { new Point(img.Width/4,img.Height/2), new Point(img.Width*3/4, img.Height/2) };
+        double[] x_accu = new double[2] { 0, 0 };
+        double[] y_accu = new double[2] { 0, 0};
+        double[] mass = new double[2] { 0, 0};
+        
+        bool term = false;
+        for (int iter = 0; iter < 10; iter++)
+        {
+            if (term)
+            {
+                break;
+            }
+            for (int x = 0; x < img.Width; x++)
+            {
+                for (int y = 0; y < img.Height; y++)
+                {
+                    if (img.Data[y,x,0]==0)
+                    {
+                        continue;
+                    }
+                    double min = 1E10;
+                    int minj = 0;
+                    for (int j = 0; j < 2; j++)
+                    {
+                        double temp = (x - center[j].X) * (x - center[j].X) + (y - center[j].Y) * (x - center[j].Y);
+                        if (min > temp)
+                        {
+                            min = temp;
+                            minj = j;
+                        }
+                    }
+                    mass[minj] += img.Data[y,x,0];
+                    x_accu[minj] += img.Data[y, x, 0] * x;
+                    y_accu[minj] += img.Data[y, x, 0] * y;
+                }
+            }
+            for (int j = 0; j < 2; j++)
+            {
+                if (mass[j] != 0)
+                {
+                    center[j] = new Point((int)(x_accu[j] / mass[j]), (int)(y_accu[j] / mass[j]));
+                }
+                x_accu[j] = 0;
+                y_accu[j] = 0;
+                mass[j] = 0;
+            }
+        }
+        for (int j = 0; j < 2; j++)
+        {
+            center[j].X = (int)(scale * center[j].X);
+            center[j].Y = (int)(scale * center[j].Y);
+        }
+        return center;
     }
 }
