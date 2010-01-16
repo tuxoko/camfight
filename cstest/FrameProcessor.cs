@@ -20,6 +20,7 @@ public class FrameProcessor
     private Rectangle face_rect;
     private Stopwatch sw;
     private bool th_check;
+    private Point[] center;
 
     //some parameters
     private int backproj_threshold=100;
@@ -73,6 +74,7 @@ public class FrameProcessor
                 _hist = GetHist(hue, smallFaceROI, mask);
                 isTracked=true;
                 th_check = true;
+                center = new Point[] { new Point(0, 0), new Point(0, 0) };
             }
             else
             {
@@ -106,8 +108,7 @@ public class FrameProcessor
 
         sw.Reset();
         sw.Start();
-        Point[] center=new Point[2];
-        center = kmeans(backproject, face_rect, kmeans_scale);
+        center = kmeans(center, backproject, face_rect, kmeans_scale);
         foreach (Point p in center)
         {
             frame.Draw(new CircleF(p, 20f), new Bgr(Color.Red), 2);
@@ -127,6 +128,7 @@ public class FrameProcessor
         isTracked = false;
         face_rect = new Rectangle();
         th_check = false;
+        center=new Point[]{new Point(0,0), new Point(0,0)};
     }
     private DenseHistogram GetHist(Image<Gray, Byte> hue, Rectangle ROI, Image<Gray, Byte> mask)
     {
@@ -175,15 +177,25 @@ public class FrameProcessor
         return backproject;
     }
 
-    private Point[] kmeans(Image<Gray, Byte> img0, Rectangle face, double scale)
+    private Point[] kmeans(Point[] last_center,Image<Gray, Byte> img0, Rectangle face, double scale)
     {
 
         Image<Gray, Byte> img = img0.Resize(1/scale, INTER.CV_INTER_LINEAR);
 
-        Point[] center = new Point[2] { new Point(img.Width/4,img.Height/2), new Point(img.Width*3/4, img.Height/2) };
+        Point[] center = new Point[2] {new Point(img.Width / 4, img.Height / 2), new Point(img.Width * 3 / 4, img.Height / 2)};
         double[] x_accu = new double[2] { 0, 0 };
         double[] y_accu = new double[2] { 0, 0};
         double[] mass = new double[2] { 0, 0};
+        double[] mom = new double[2] { 0, 0 };
+
+        if (last_center[0].X != 0 || last_center[0].Y != 0)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                center[i].X = (int)((double)last_center[i].X / scale);
+                center[i].Y = (int)((double)last_center[i].Y / scale);
+            }
+        }
         
         bool term = false;
         for (int iter = 0; iter < 10; iter++)
