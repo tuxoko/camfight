@@ -182,12 +182,11 @@ public class FrameProcessor
 
         Image<Gray, Byte> img = img0.Resize(1/scale, INTER.CV_INTER_LINEAR);
 
-        Point[] center = new Point[2] {new Point(img.Width / 4, img.Height / 2), new Point(img.Width * 3 / 4, img.Height / 2)};
-        double[] x_accu = new double[2] { 0, 0 };
-        double[] y_accu = new double[2] { 0, 0};
-        double[] mass = new double[2] { 0, 0};
-        double[] mom = new double[2] { 0, 0 };
-
+        Point[] center = new Point[5] {new Point(img.Width / 4, img.Height / 2), new Point(img.Width * 3 / 4, img.Height / 2),new Point(),new Point(),new Point()};
+        double[] x_accu = new double[5] { 0, 0 ,0,0,0};
+        double[] y_accu = new double[5] { 0, 0,0,0,0};
+        double[] mass = new double[5] { 0, 0,0,0,0};
+        int n = 2;
         if (last_center[0].X != 0 || last_center[0].Y != 0)
         {
             for (int i = 0; i < 2; i++)
@@ -196,7 +195,9 @@ public class FrameProcessor
                 center[i].Y = (int)((double)last_center[i].Y / scale);
             }
         }
-        
+
+        n = dummy_center(center, img.Size);
+
         bool term = false;
         for (int iter = 0; iter < 10; iter++)
         {
@@ -214,7 +215,7 @@ public class FrameProcessor
                     }
                     double min = 1E10;
                     int minj = 0;
-                    for (int j = 0; j < 2; j++)
+                    for (int j = 0; j < n; j++)
                     {
                         double temp = (x - center[j].X) * (x - center[j].X) + (y - center[j].Y) * (x - center[j].Y);
                         if (min > temp)
@@ -238,12 +239,66 @@ public class FrameProcessor
                 y_accu[j] = 0;
                 mass[j] = 0;
             }
+            n = dummy_center(center, img.Size);
         }
-        for (int j = 0; j < 2; j++)
+        for (int j = 0; j < 5; j++)
         {
             center[j].X = (int)(scale * center[j].X);
             center[j].Y = (int)(scale * center[j].Y);
         }
         return center;
+    }
+
+    private int dummy_center(Point[] center, Size img_size)
+    {
+        int n = 2;
+        int[] region = new int[4] { 0, 0, 0, 0 };
+        for (int i = 0; i < 2; i++)
+        {
+            if (center[i].X < img_size.Width / 2)
+            {
+                if (center[i].Y < img_size.Height / 2)
+                {
+                    region[0]++;
+                }
+                else
+                {
+                    region[2]++;
+                }
+            }
+            else
+            {
+                if (center[i].Y < img_size.Height / 2)
+                {
+                    region[1]++;
+                }
+                else
+                {
+                    region[3]++;
+                }
+            }
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            if (region[i] == 0)
+            {
+                switch (i)
+                {
+                    case 0:
+                        center[n++] = new Point(0, 0);
+                        break;
+                    case 1:
+                        center[n++] = new Point(img_size.Width, 0);
+                        break;
+                    case 2:
+                        center[n++] = new Point(0, img_size.Height);
+                        break;
+                    case 3:
+                        center[n++] = new Point(img_size);
+                        break;
+                }
+            }
+        }
+        return n;
     }
 }
