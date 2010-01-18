@@ -191,8 +191,8 @@ public class FrameProcessor
         {
             for (int i = 0; i < 2; i++)
             {
-                center[i].X = (int)((double)last_center[i].X / scale);
-                center[i].Y = (int)((double)last_center[i].Y / scale);
+                //center[i].X = (int)((double)last_center[i].X / scale);
+                //center[i].Y = (int)((double)last_center[i].Y / scale);
             }
         }
 
