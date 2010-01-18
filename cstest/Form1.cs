@@ -20,7 +20,7 @@ namespace cstest
         public Form1()
         {
             InitializeComponent();
-            _haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt2.xml");
+            _haar = new HaarCascade("..\\..\\haarcascade_frontalface_alt_tree.xml");
             histogramBox1.Show();
         }
 
@@ -47,6 +47,7 @@ namespace cstest
         private void ProcessFrame(object sender, EventArgs arg)
         {
             Image<Bgr, Byte> frame = _capture.QueryFrame();
+            
             if (isTracked == false)
             {
 
@@ -56,6 +57,7 @@ namespace cstest
                 //backproject = cvCreateImage(cvGetSize(frame), 8, 1);
                 hsv = new Image<Hsv, byte>(frame.Width, frame.Height);
                 hsv = frame.Convert<Hsv, Byte>();
+                hsv._EqualizeHist();
                 hue = new Image<Gray, byte>(frame.Width, frame.Height);
                 mask = new Image<Gray, byte>(frame.Width, frame.Height);
                 backproject = new Image<Gray, byte>(frame.Width, frame.Height);
@@ -160,6 +162,7 @@ namespace cstest
 
                 frame.Draw(track_window, new Bgr(0, double.MaxValue, 0), 3);
             }
+            
             captureImageBox.Image = frame;
 
             imageBox1.Image = backproject;
