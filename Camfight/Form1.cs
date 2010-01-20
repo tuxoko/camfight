@@ -354,20 +354,25 @@ namespace Camfight
                 controlTimer.Start();
             }
 
+            int mystate = 0;
             if (gamestate == GameState.GAME)
             {
                 if (e.KeyData == Keys.J)
                 {
                     playerStateMutex.WaitOne();
+                    mystate = 3;
                     myplayer.update(3);
                     playerStateMutex.ReleaseMutex();
                 }
                 else if (e.KeyData == Keys.L)
                 {
                     playerStateMutex.WaitOne();
+                    mystate = 6;
                     myplayer.update(6);
                     playerStateMutex.ReleaseMutex();
                 }
+                packet play=new packet("play",enemyname,null,mystate);
+                SendPacket(play);
                 myplayerTimer.Start();
             }
         }
