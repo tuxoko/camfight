@@ -28,6 +28,7 @@ namespace Camfight
         //player object
         private Player myplayer=null;
         private Player enemy=null;
+        private string enemyname;
         private string username;
 
         //use for rendering
@@ -76,8 +77,8 @@ namespace Camfight
             SetAnimation();
             username="test1";
             LoadingContent();
-            //ConnectToServer();        
-            gamestate = GameState.GAME;
+            ConnectToServer();        
+            //gamestate = GameState.GAME;
             myTimer.Tick += new EventHandler(GameDraw);
             myTimer.Interval = 100;
             myTimer.Start();
@@ -90,17 +91,13 @@ namespace Camfight
         {
             try
             {
-                IPAddress serverip = IPAddress.Parse("140.112.18.202");
+                IPAddress serverip = IPAddress.Parse("140.112.18.203");
                 IPEndPoint serverhost = new IPEndPoint(serverip, 800);
                 _tcpl = new TcpClient();
                 _tcpl.Connect(serverhost);
                 NetworkStream nets = _tcpl.GetStream();
 
-                string msg = string.Format("l " + username);
-                byte[] buffer = Encoding.Unicode.GetBytes(msg);
-                nets.Write(buffer, 0, buffer.Length);
-
-                packet mypacket = new packet("login",username,null,0);
+                packet mypacket = new packet("l",username,null,0);
 
                 IFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(nets,mypacket);
@@ -125,7 +122,8 @@ namespace Camfight
                 packet receiveobj = (packet)formatter.Deserialize(nets);
                 switch(receiveobj.Msg)
                 {
-                    case("error"):
+                    case("e"):
+                        quit();
                         break;
                     case("match"):
                         GameStart(receiveobj);
@@ -141,24 +139,44 @@ namespace Camfight
             }
         }
 
+        private void quit()
+        {
+            if (listenthr != null)
+                listenthr.Abort();
+        }
+
+        private void SendPacket(packet senddata)
+        {
+            try
+            {
+                NetworkStream nets = _tcpl.GetStream();
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(nets, senddata);
+            }
+            catch
+            {
+            }
+        }
+
         private void GameStart(packet receiveobj)
         {
+            enemyname = receiveobj.Name;
             LoadingEnemyContent(receiveobj.Msg);
             gamestate = GameState.GAME;
         }
 
         private void LoadingEnemyContent(string type)
         {
-            if(type=="player1")
+            if(type=="0")
                 enemy = new Player("player1",Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh);
-            else if(type=="player2")
+            else if(type=="1")
                 enemy = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh);
         }
         private void LoadingContent()
         {   
             background = Resources.SPback;
             myplayer = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh);
-            enemy = new Player("player1", Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh);
+            //enemy = new Player("player1", Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh);
         }
 
         public void GameDraw(Object myObject,EventArgs myEventArgs)
@@ -242,7 +260,43 @@ namespace Camfight
         {
             if (gamestate == GameState.GAME && acceptControl==true)
             {
-                if (e.KeyData == Keys.A)
+                if (e.KeyData == Keys.D1)
+                {
+                    ArrayList seq = animationMove[0].Clone() as ArrayList;
+                    aniMutex.WaitOne();
+                    myplayer.isHit(0);
+                    enemy.update(0);
+                    myAnimation.Enqueue(new Animation("player1", seq));
+                    aniMutex.ReleaseMutex();
+                }
+                else if (e.KeyData == Keys.D2)
+                {
+                    ArrayList seq = animationMove[1].Clone() as ArrayList;
+                    aniMutex.WaitOne();
+                    myplayer.isHit(1);
+                    enemy.update(1);
+                    myAnimation.Enqueue(new Animation("player1", seq));
+                    aniMutex.ReleaseMutex();
+                }
+                else if (e.KeyData == Keys.D3)
+                {
+                    ArrayList seq = animationMove[2].Clone() as ArrayList;
+                    aniMutex.WaitOne();
+                    myplayer.isHit(2);
+                    enemy.update(2);
+                    myAnimation.Enqueue(new Animation("player1", seq));
+                    aniMutex.ReleaseMutex();
+                }
+                else if (e.KeyData == Keys.D4)
+                {
+                    ArrayList seq = animationMove[3].Clone() as ArrayList;
+                    aniMutex.WaitOne();
+                    myplayer.isHit(3);
+                    enemy.update(3);
+                    myAnimation.Enqueue(new Animation("player1", seq));
+                    aniMutex.ReleaseMutex();
+                }
+                else if (e.KeyData == Keys.D5)
                 {
                     ArrayList seq = animationMove[4].Clone() as ArrayList;
                     aniMutex.WaitOne();
@@ -251,12 +305,39 @@ namespace Camfight
                     myAnimation.Enqueue(new Animation("player1", seq));
                     aniMutex.ReleaseMutex();
                 }
-                else if (e.KeyData == Keys.D)
+                else if (e.KeyData == Keys.D6)
+                {
+                    ArrayList seq = animationMove[5].Clone() as ArrayList;
+                    aniMutex.WaitOne();
+                    myplayer.isHit(5);
+                    enemy.update(5);
+                    myAnimation.Enqueue(new Animation("player1", seq));
+                    aniMutex.ReleaseMutex();
+                }
+                else if (e.KeyData == Keys.D7)
+                {
+                    ArrayList seq = animationMove[6].Clone() as ArrayList;
+                    aniMutex.WaitOne();
+                    myplayer.isHit(6);
+                    enemy.update(6);
+                    myAnimation.Enqueue(new Animation("player1", seq));
+                    aniMutex.ReleaseMutex();
+                }
+                else if (e.KeyData == Keys.D8)
                 {
                     ArrayList seq = animationMove[7].Clone() as ArrayList;
                     aniMutex.WaitOne();
                     myplayer.isHit(7);
-                    enemy.update(4);
+                    enemy.update(7);
+                    myAnimation.Enqueue(new Animation("player1", seq));
+                    aniMutex.ReleaseMutex();
+                }
+                else if (e.KeyData == Keys.D9)
+                {
+                    ArrayList seq = animationMove[8].Clone() as ArrayList;
+                    aniMutex.WaitOne();
+                    myplayer.isHit(8);
+                    enemy.update(8);
                     myAnimation.Enqueue(new Animation("player1", seq));
                     aniMutex.ReleaseMutex();
                 }
