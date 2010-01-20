@@ -123,7 +123,7 @@ namespace Camfight
                     IFormatter formatter = new BinaryFormatter();
                     NetworkStream nets = _tcpl.GetStream();
                     packet receiveobj = (packet)formatter.Deserialize(nets);
-                    switch (receiveobj.Msg)
+                    switch (receiveobj.Cmd)
                     {
                         case ("e"):
                             quit();
