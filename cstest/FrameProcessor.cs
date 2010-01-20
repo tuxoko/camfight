@@ -25,6 +25,7 @@ public class FrameProcessor
     //some parameters
     private int backproj_threshold=100;
     private double kmeans_scale = 16;
+    private int hand_size = 100;
 
     public bool isTracked = false;
     public DenseHistogram _hist;
@@ -115,6 +116,28 @@ public class FrameProcessor
         }
         sw.Stop();
         t_kmeans = sw.ElapsedMilliseconds;
+
+
+        sw.Reset();
+        sw.Start();
+        left = new Rectangle(center[0].X - hand_size / 2, center[0].Y - hand_size / 2, hand_size, hand_size);
+        right = new Rectangle(center[1].X - hand_size / 2, center[1].Y - hand_size / 2, hand_size, hand_size);
+        frame.Draw(left,new Bgr(Color.Chocolate),2);
+        frame.Draw(right,new Bgr(Color.Chocolate),2);
+        backproject.ROI = left;
+        MCvMoments left_mom=backproject.GetMoments(false);
+        backproject.ROI = right;
+        MCvMoments right_mom = backproject.GetMoments(false);
+        Emgu.CV.CvInvoke.cvResetImageROI(backproject);
+        try
+        {
+            MCvFont font = new MCvFont(FONT.CV_FONT_HERSHEY_PLAIN, 1, 1);
+            frame.Draw("left m00=" + left_mom.m00.ToString() + "\nleft ncm22=" + (left_mom.GetCentralMoment(2, 0)+left_mom.GetCentralMoment(0, 2)).ToString()
+                + "\nright m00=" + right_mom.m00.ToString() + "\nright ncm22=" + (right_mom.GetCentralMoment(2, 0) + right_mom.GetCentralMoment(0, 2)).ToString(), ref font, new Point(20, 20), new Bgr(Color.Crimson));
+        }
+        catch { }
+        sw.Stop();
+        t_hand = sw.ElapsedMilliseconds;
     }
 
     private MCvAvgComp[] FaceDetect(Image<Bgr, Byte> frame)

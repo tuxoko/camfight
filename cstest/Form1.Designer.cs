@@ -95,9 +95,9 @@
             // 
             // rtbLog
             // 
-            this.rtbLog.Location = new System.Drawing.Point(129, 528);
+            this.rtbLog.Location = new System.Drawing.Point(66, 528);
             this.rtbLog.Name = "rtbLog";
-            this.rtbLog.Size = new System.Drawing.Size(294, 157);
+            this.rtbLog.Size = new System.Drawing.Size(484, 157);
             this.rtbLog.TabIndex = 7;
             this.rtbLog.Text = "";
             // 
