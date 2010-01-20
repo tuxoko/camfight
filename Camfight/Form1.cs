@@ -13,6 +13,7 @@ using System.Threading;
 using Camfight.Properties;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using mypacket;
 
 namespace Camfight
 {
@@ -115,28 +116,32 @@ namespace Camfight
 
         private void listenThread()
         {
-            while (true)
+            try
             {
-                IFormatter formatter = new BinaryFormatter();
-                NetworkStream nets = _tcpl.GetStream();
-                packet receiveobj = (packet)formatter.Deserialize(nets);
-                switch(receiveobj.Msg)
+                while (true)
                 {
-                    case("e"):
-                        quit();
-                        break;
-                    case("match"):
-                        GameStart(receiveobj);
-                        break;
-                    case("quit"):
-                        break;
-                    case("play"):
-                        EnemyMove(receiveobj);
-                        break;
-                    default:
-                        break;
+                    IFormatter formatter = new BinaryFormatter();
+                    NetworkStream nets = _tcpl.GetStream();
+                    packet receiveobj = (packet)formatter.Deserialize(nets);
+                    switch (receiveobj.Msg)
+                    {
+                        case ("e"):
+                            quit();
+                            break;
+                        case ("match"):
+                            GameStart(receiveobj);
+                            break;
+                        case ("quit"):
+                            break;
+                        case ("play"):
+                            EnemyMove(receiveobj);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
+            catch { }
         }
 
         private void quit()
