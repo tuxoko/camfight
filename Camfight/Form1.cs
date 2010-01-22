@@ -14,6 +14,13 @@ using Camfight.Properties;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Mypacket;
+using System.IO;
+
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.Util;
+using System.Threading;
+using Emgu.CV.CvEnum;
 
 namespace Camfight
 {
@@ -53,6 +60,7 @@ namespace Camfight
         
         //use for time counting
         private int count = 0;
+        private int anicount = 0;
         private int playtime = 120;
         private bool playAnimation = false;
         private bool playIdle = false;
@@ -86,6 +94,10 @@ namespace Camfight
         private string[] log = new string[2] { "Username", "Password" };
 
         private delegate void InvokeFunction();
+        private delegate void InvokeFunction2(packet pac);
+
+        private FrameProcessor FPU;
+        private DenseHistogram hist;
 
         public Form1()
         {
@@ -95,12 +107,20 @@ namespace Camfight
             //ConnectToServer();        
             //gamestate = GameState.GAME;
             myTimer.Tick += new EventHandler(GameDraw);
-            myTimer.Interval = 100;
+            myTimer.Interval = 25;
             myTimer.Start();
             controlTimer.Tick += new EventHandler(GameControlReset);
             controlTimer.Interval = 500;
             myplayerTimer.Tick += new EventHandler(PlayerStateReset);
             myplayerTimer.Interval = 5000;
+            FPU = new FrameProcessor();
+            FPU.Reset();
+
+            IFormatter formatter = new BinaryFormatter();
+            FileStream fs = new FileStream("../../hist.dat", FileMode.Open);
+            hist = (DenseHistogram)formatter.Deserialize(fs);
+
+            FPU.SetHist(hist);
         }
         private void reset()
         {
@@ -153,7 +173,8 @@ namespace Camfight
                             this.Invoke(new InvokeFunction(this.quit), new object[] { });
                             break;
                         case ("match"):
-                            GameStart(receiveobj);
+                            this.Invoke(new InvokeFunction2(this.GameStart), receiveobj);
+                            //GameStart(receiveobj);
                             break;
                         case ("m"):
                             this.Invoke(new InvokeFunction(this.quit), new object[] {  }); 
@@ -176,6 +197,10 @@ namespace Camfight
             if (listenthr != null)
                 listenthr.Abort();
             listenthr = null;
+
+            if (fpu_thr != null)
+                fpu_thr.Abort();
+            fpu_thr = null;
             reset();
         }
 
@@ -192,11 +217,15 @@ namespace Camfight
             }
         }
 
+        private Thread fpu_thr;
         private void GameStart(packet receiveobj)
         {
             enemyname = receiveobj.Name;
             LoadingEnemyContent(receiveobj.Msg);
             gamestate = GameState.GAME;
+            //Application.Idle += new EventHandler(ProcessFrame);
+            fpu_thr = new Thread(new ThreadStart(ProcessFrame));
+            fpu_thr.Start();
         }
 
         private void LoadingEnemyContent(string type)

@@ -14,7 +14,11 @@ using Emgu.Util;
 using System.Threading;
 using Emgu.CV.CvEnum;
 
-
+[Serializable]
+public class HistSerial
+{
+    public DenseHistogram hist;
+}
 
 public class FrameProcessor
 {

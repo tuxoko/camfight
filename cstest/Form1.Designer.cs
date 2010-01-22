@@ -35,6 +35,9 @@
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.back_project = new System.Windows.Forms.Label();
+            this.rtbLog = new System.Windows.Forms.RichTextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.captureImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.SuspendLayout();
@@ -42,9 +45,9 @@
             // captureImageBox
             // 
             this.captureImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.captureImageBox.Location = new System.Drawing.Point(12, 72);
+            this.captureImageBox.Location = new System.Drawing.Point(12, 43);
             this.captureImageBox.Name = "captureImageBox";
-            this.captureImageBox.Size = new System.Drawing.Size(653, 411);
+            this.captureImageBox.Size = new System.Drawing.Size(640, 480);
             this.captureImageBox.TabIndex = 2;
             this.captureImageBox.TabStop = false;
             // 
@@ -61,7 +64,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(144, 43);
+            this.label1.Location = new System.Drawing.Point(193, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(73, 12);
             this.label1.TabIndex = 4;
@@ -69,33 +72,54 @@
             // 
             // histogramBox1
             // 
-            this.histogramBox1.Location = new System.Drawing.Point(771, 520);
+            this.histogramBox1.Location = new System.Drawing.Point(770, 529);
             this.histogramBox1.Name = "histogramBox1";
             this.histogramBox1.Size = new System.Drawing.Size(391, 165);
             this.histogramBox1.TabIndex = 5;
             // 
             // imageBox1
             // 
-            this.imageBox1.Location = new System.Drawing.Point(671, 72);
+            this.imageBox1.Location = new System.Drawing.Point(671, 43);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(575, 411);
+            this.imageBox1.Size = new System.Drawing.Size(640, 480);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
+            this.imageBox1.Click += new System.EventHandler(this.imageBox1_Click);
             // 
             // back_project
             // 
             this.back_project.AutoSize = true;
-            this.back_project.Location = new System.Drawing.Point(900, 43);
+            this.back_project.Location = new System.Drawing.Point(901, 16);
             this.back_project.Name = "back_project";
             this.back_project.Size = new System.Drawing.Size(65, 12);
             this.back_project.TabIndex = 6;
             this.back_project.Text = "back_project";
+            // 
+            // rtbLog
+            // 
+            this.rtbLog.Location = new System.Drawing.Point(66, 528);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.Size = new System.Drawing.Size(484, 157);
+            this.rtbLog.TabIndex = 7;
+            this.rtbLog.Text = "";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(304, 10);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(97, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Save Histogram";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1279, 697);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.rtbLog);
             this.Controls.Add(this.back_project);
             this.Controls.Add(this.imageBox1);
             this.Controls.Add(this.histogramBox1);
@@ -119,6 +143,9 @@
         private Emgu.CV.UI.HistogramBox histogramBox1;
         private Emgu.CV.UI.ImageBox imageBox1;
         private System.Windows.Forms.Label back_project;
+        private System.Windows.Forms.RichTextBox rtbLog;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
 
 
     }

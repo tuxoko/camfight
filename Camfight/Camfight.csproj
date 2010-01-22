@@ -43,6 +43,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\Emgu\Emgu CV\bin\Emgu.Util.dll</HintPath>
     </Reference>
+    <Reference Include="Hist, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Hist\bin\Release\Hist.dll</HintPath>
+    </Reference>
     <Reference Include="Mypacket, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Mypacket\bin\Release\Mypacket.dll</HintPath>
@@ -75,6 +79,9 @@
     </Compile>
     <Compile Include="FrameProcessor.cs" />
     <Compile Include="player.cs" />
+    <Compile Include="Process.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

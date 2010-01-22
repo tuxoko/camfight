@@ -39,11 +39,12 @@ namespace Camfight
             }
             else if (gamestate == GameState.GAME)
             {
-                if (++count >= 10)
+                if (++count >= 40)
                 {
-                    count -= 10;
+                    count -= 40;
                     playtime--;
                 }
+                
                 if (playAnimation == false)//no animation playing now
                 {
                     if (myAnimation.Count != 0)
@@ -83,10 +84,18 @@ namespace Camfight
                         playMutex.ReleaseMutex();
                     }
                 }
+                
                 if (playAnimation == true)
                 {
-                    if (playindex < nowplay.PlaySeq.Count)
+                    if (playindex < nowplay.PlaySeq.Count && ++anicount >= 4)
+                    {
                         Render((int)nowplay.PlaySeq[playindex++]);
+                        anicount -= 4;
+                    }
+                    else
+                    {
+                        Render((int)nowplay.PlaySeq[playindex]);
+                    }
                     if (playindex == nowplay.PlaySeq.Count)
                     {
                         playMutex.WaitOne();

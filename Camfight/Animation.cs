@@ -60,7 +60,7 @@ namespace Camfight
             animationMove[5].Add(index[3]);
             animationMove[5].Add(index[0]);
 
-            //set left
+            //set right
             animationMove[6].Add(index[0]);
             for (int i = 0; i < 4; i++) animationMove[6].Add(index[6]);
             animationMove[6].Add(index[0]);
