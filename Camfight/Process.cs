@@ -13,6 +13,8 @@ using Emgu.Util;
 using System.Threading;
 using Emgu.CV.CvEnum;
 
+using Mypacket;
+
 namespace Camfight
 {
     public partial class Form1 : Form
@@ -33,6 +35,11 @@ namespace Camfight
                 int face_sector = GetSector(new Point(FPU.face.X + FPU.face.Width / 2, FPU.face.Y + FPU.face.Height / 2),frame.Size);
                 int left_sector = GetSector(FPU.center[1],frame.Size);
                 int right_sector = GetSector(FPU.center[0],frame.Size);
+
+                int sector = (right_sector << 8) + (left_sector << 4) + face_sector;
+
+                packet pac = new packet("play", enemyname, "", 0, 0, sector, false);
+                SendPacket(pac);
             }
         }
 
