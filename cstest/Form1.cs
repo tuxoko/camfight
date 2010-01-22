@@ -191,36 +191,9 @@ namespace cstest
             }
             catch { }
 
-            if (FPU.left_mom.m00 > 1000000)
+            if (FPU.have_left)
             {
-                if (FPU.left_mom.m00 - last_left_m00>100000)
-                {
-                    left_state = 1;
-                }
-                else
-                {
-                    if (left_state > 0)
-                    {
-                        left_state++;
-                    }
-                }
-                if (left_state == 2)
-                {
-                    frame.Draw(new CircleF(FPU.center[0], 40f), new Bgr(Color.White), 2);
-                    left_state = 0;
-                }
-                else
-                {
-                    frame.Draw(new CircleF(FPU.center[0], 40f), new Bgr(Color.YellowGreen), 2);
-                }
-            }
-            else
-            {
-                    frame.Draw(new CircleF(FPU.center[0], 40f), new Bgr(Color.Red), 2);
-            }
-            if (FPU.right_mom.m00 > 1000000)
-            {
-                if (FPU.right_mom.m00 - last_right_m00>100000)
+                if (FPU.have_left_punch)
                 {
                     frame.Draw(new CircleF(FPU.center[1], 40f), new Bgr(Color.White), 2);
                 }
@@ -233,9 +206,6 @@ namespace cstest
             {
                 frame.Draw(new CircleF(FPU.center[1], 40f), new Bgr(Color.Red), 2);
             }
-
-            last_left_m00 = FPU.left_mom.m00;
-            last_right_m00 = FPU.right_mom.m00;
 
             captureImageBox.Image = frame;
             imageBox1.Image = FPU.backproject;

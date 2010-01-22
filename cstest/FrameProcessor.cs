@@ -41,6 +41,8 @@ public class FrameProcessor
     public bool have_face;
     public bool have_left;
     public bool have_right;
+    public bool have_left_punch;
+    public bool have_right_punch;
     public Image<Gray, Byte> backproject;
     public double mass;
     public MCvMoments left_mom, right_mom;
@@ -136,8 +138,8 @@ public class FrameProcessor
 
         sw.Reset();
         sw.Start();
-        left = new Rectangle(center[0].X - hand_size / 2, center[0].Y - hand_size / 2, hand_size, hand_size);
-        right = new Rectangle(center[1].X - hand_size / 2, center[1].Y - hand_size / 2, hand_size, hand_size);
+        right = new Rectangle(center[0].X - hand_size / 2, center[0].Y - hand_size / 2, hand_size, hand_size);
+        left = new Rectangle(center[1].X - hand_size / 2, center[1].Y - hand_size / 2, hand_size, hand_size);
         backproject.ROI = left;
         left_mom=backproject.GetMoments(false);
         backproject.ROI = right;
@@ -146,6 +148,81 @@ public class FrameProcessor
         
         sw.Stop();
         t_hand = sw.ElapsedMilliseconds;
+
+
+        ProcessInput();
+    }
+
+    private int left_state = 0;
+    private int right_state = 0;
+    private int left_dist=0;
+    private int right_dist=0;
+    private double last_left_m00;
+    private double last_right_m00;
+
+    private void ProcessInput()
+    {
+        have_left = false;
+        have_right = false;
+        have_left_punch = false;
+        have_right_punch = false;
+        if (left_mom.m00 > 1000000)
+        {
+            have_left = true;
+            if (left_mom.m00 - last_left_m00 > 100000)
+            {
+                left_state=1;
+                left_dist++;
+            }
+            else if (left_state > 0)
+            {
+                left_state++;
+            }
+            if (left_state == 3)
+            {
+                left_state = 0;
+                if (left_dist > 2)
+                {
+                    have_left_punch = true;
+                }
+                left_dist = 0;
+            }
+        }
+        else
+        {
+            left_state = 0;
+            left_dist = 0;
+        }
+
+        if (right_mom.m00 > 1000000)
+        {
+            have_right = true;
+            if (right_mom.m00 - last_right_m00 > 100000)
+            {
+                right_state = 1;
+                right_dist++;
+            }
+            else if (right_state > 0)
+            {
+                right_state++;
+            }
+            if (right_state == 3)
+            {
+                right_state = 0;
+                if (right_dist > 2)
+                {
+                    have_right_punch = true;
+                }
+                right_dist = 0;
+            }
+        }
+        else
+        {
+            right_state = 0;
+            right_dist = 0;
+        }
+        last_left_m00 = left_mom.m00;
+        last_right_m00 = right_mom.m00;
     }
 
     private MCvAvgComp[] FaceDetect(Image<Bgr, Byte> frame)
