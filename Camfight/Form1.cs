@@ -13,7 +13,7 @@ using System.Threading;
 using Camfight.Properties;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using mypacket;
+using Mypacket;
 
 namespace Camfight
 {

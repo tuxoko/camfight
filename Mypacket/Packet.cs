@@ -5,8 +5,6 @@ using System.Text;
 
 namespace Mypacket
 {
-    public class Packet
-    {
         [Serializable]
         public class packet
         {
@@ -43,5 +41,4 @@ namespace Mypacket
                 this.move = move;
             }
         }
-    }
 }

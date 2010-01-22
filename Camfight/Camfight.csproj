@@ -31,9 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mypacket, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Mypacket, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\mypacket.dll</HintPath>
+      <HintPath>..\Mypacket\bin\Release\Mypacket.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
