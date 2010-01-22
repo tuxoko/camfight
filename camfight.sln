@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cstest2", "cstest2\cstest2.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camfight", "Camfight\Camfight.csproj", "{E45E0287-F12E-4AD4-82A9-AC422C3ABB4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mypacket", "Mypacket\Mypacket.csproj", "{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,20 @@ Global
 		{E45E0287-F12E-4AD4-82A9-AC422C3ABB4C}.Release|x86.ActiveCfg = Release|Any CPU
 		{E45E0287-F12E-4AD4-82A9-AC422C3ABB4C}.Release|Xbox 360.ActiveCfg = Release|Any CPU
 		{E45E0287-F12E-4AD4-82A9-AC422C3ABB4C}.Release|Zune.ActiveCfg = Release|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Debug|Xbox 360.ActiveCfg = Debug|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Debug|Zune.ActiveCfg = Debug|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Release|x86.ActiveCfg = Release|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Release|Xbox 360.ActiveCfg = Release|Any CPU
+		{CFC21520-2093-48FC-BE04-E5DA2BFC8BA0}.Release|Zune.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,5 @@
+D:\C++\camfight\Mypacket\obj\Release\ResolveAssemblyReference.cache
+D:\C++\camfight\Mypacket\bin\Release\Mypacket.dll
+D:\C++\camfight\Mypacket\bin\Release\Mypacket.pdb
+D:\C++\camfight\Mypacket\obj\Release\Mypacket.dll
+D:\C++\camfight\Mypacket\obj\Release\Mypacket.pdb
