@@ -64,7 +64,7 @@ namespace Camfight
             }
             else
             {
-                if ((move%3) != state)
+                if ((move%3) != state && (move%3) != 0)
                 {
                     getHurt(20);
                 }

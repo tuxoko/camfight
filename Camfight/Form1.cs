@@ -21,16 +21,18 @@ namespace Camfight
     {
         enum GameState
         {
-            MENU=0,
-            INTERNET=1,
-            GAME=2
+            TITLE=0,
+            MENU=1,
+            INTERNET=2,
+            LOADING=3,
+            GAME=4
         };
 
         //player object
         private Player myplayer=null;
         private Player enemy=null;
-        private string enemyname;
-        private string username;
+        private string enemyname="";
+        private string username="";
 
         //use for rendering
         private Graphics g = null;
@@ -57,9 +59,10 @@ namespace Camfight
         //Thread for listening
         private TcpClient _tcpl = null;
         private Thread listenthr = null;
+        private NetworkStream nets = null;
         
         //GameState
-        private GameState gamestate = GameState.MENU;
+        private GameState gamestate = GameState.TITLE;
 
         //Animation move
         private ArrayList [] animationMove=new ArrayList[9];
@@ -72,13 +75,23 @@ namespace Camfight
         private Mutex playerStateMutex = new Mutex();
         private Mutex enemyStateMutex = new Mutex();
 
+        //game menu
+        private string[] menus = new string[2] { "Network", "Quit" };
+        private int menuIndex = 0;
+
+        //game login
+        private string password="";
+        private int logIndex = 0;
+        private string[] log = new string[2] { "Username", "Password" };
+
+        private delegate void InvokeFunction();
+
         public Form1()
         {
             InitializeComponent();
             SetAnimation();
-            username="test1";
             LoadingContent();
-            ConnectToServer();        
+            //ConnectToServer();        
             //gamestate = GameState.GAME;
             myTimer.Tick += new EventHandler(GameDraw);
             myTimer.Interval = 100;
@@ -88,6 +101,14 @@ namespace Camfight
             myplayerTimer.Tick += new EventHandler(PlayerStateReset);
             myplayerTimer.Interval = 5000;
         }
+        private void reset()
+        {
+            gamestate = GameState.TITLE;
+            username = "";
+            password = "";
+            logIndex = 0;
+            menuIndex = 0;
+        }
         private void ConnectToServer()
         {
             try
@@ -96,12 +117,13 @@ namespace Camfight
                 IPEndPoint serverhost = new IPEndPoint(serverip, 800);
                 _tcpl = new TcpClient();
                 _tcpl.Connect(serverhost);
-                NetworkStream nets = _tcpl.GetStream();
+                nets = _tcpl.GetStream();
 
-                packet mypacket = new packet("l",username,null,0);
+                packet mypacket = new packet("l",username,password,0);
 
                 IFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(nets,mypacket);
+
 
                 listenthr = new Thread(new ThreadStart(listenThread));
                 listenthr.Start();
@@ -110,7 +132,7 @@ namespace Camfight
             catch
             {
                 MessageBox.Show("連線錯誤");
-                this.Close();
+                reset();
             }
         }
 
@@ -121,15 +143,19 @@ namespace Camfight
                 while (true)
                 {
                     IFormatter formatter = new BinaryFormatter();
-                    NetworkStream nets = _tcpl.GetStream();
+                    //NetworkStream nets = _tcpl.GetStream();
                     packet receiveobj = (packet)formatter.Deserialize(nets);
+                    MessageBox.Show(receiveobj.Cmd);
                     switch (receiveobj.Cmd)
                     {
                         case ("e"):
-                            quit();
+                            this.Invoke(new InvokeFunction(this.quit), new object[] { });
                             break;
                         case ("match"):
                             GameStart(receiveobj);
+                            break;
+                        case ("m"):
+                            this.Invoke(new InvokeFunction(this.quit), new object[] {  }); 
                             break;
                         case ("quit"):
                             break;
@@ -141,22 +167,24 @@ namespace Camfight
                     }
                 }
             }
-            catch { }
+            catch { quit(); }
         }
 
         private void quit()
         {
             if (listenthr != null)
                 listenthr.Abort();
+            listenthr = null;
+            reset();
         }
 
         private void SendPacket(packet senddata)
         {
             try
             {
-                NetworkStream nets = _tcpl.GetStream();
+                NetworkStream net = _tcpl.GetStream();
                 IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(nets, senddata);
+                formatter.Serialize(net, senddata);
             }
             catch
             {
@@ -186,7 +214,19 @@ namespace Camfight
 
         public void GameDraw(Object myObject,EventArgs myEventArgs)
         {
-            if (gamestate == GameState.GAME)
+            if (gamestate == GameState.TITLE)
+	        {
+                RenderTitle();
+            }
+            else if (gamestate == GameState.MENU)
+            {
+                RenderMenu();
+            }
+            else if (gamestate == GameState.INTERNET)
+            {
+                RenderLog();
+            }
+            else if (gamestate == GameState.GAME)
             {
                 if (++count >= 10)
                 {
@@ -195,7 +235,7 @@ namespace Camfight
                 }
                 if (playAnimation == false)//no animation playing now
                 {
-                    if(myAnimation.Count!=0)
+                    if (myAnimation.Count != 0)
                     {
                         aniMutex.WaitOne();
                         nowplay = myAnimation.Dequeue() as Animation;
@@ -225,6 +265,86 @@ namespace Camfight
             
 
             if (playtime == 0) myTimer.Stop();
+        }
+
+        public void RenderTitle()
+        {
+            //background
+            g = Graphics.FromImage(picShow);
+            g.DrawImage(background,new Rectangle(0,0,640,480));
+            //title
+            Font myfont = new Font("Arial Rounded MT Bold", 70.0f);
+            g.DrawString("CAMFIGHT", myfont, Brushes.Black, new PointF(59, 24));
+            g.DrawString("CAMFIGHT",myfont,Brushes.DarkOrange,new PointF(55,20));
+
+            Font myfont2 = new Font("Arial Bold",50.0f);
+            g.DrawString("START", myfont2, Brushes.Black, new PointF(204, 304));
+            g.DrawString("START", myfont2, Brushes.Red, new PointF(200, 300));
+            gamebox.Image = picShow;
+            gamebox.Refresh();
+            gamebox.Show();
+        }
+
+        public void RenderMenu()
+        {
+            //background
+            g = Graphics.FromImage(picShow);
+            g.DrawImage(background, new Rectangle(0, 0, 640, 480));
+
+            Font myfont = new Font("Arial Rounded MT Bold", 60.0f);
+            PointF [] myp = new PointF[2]{new PointF(10,10),new PointF(10,90)};
+            //draw text
+            for (int i = 0; i < 2; i++)
+            {
+                if (menuIndex == i)
+                {
+                    g.DrawString(menus[i], myfont, Brushes.Red, myp[i]);
+                }
+                else
+                {
+                    g.DrawString(menus[i],myfont,Brushes.Black,myp[i]);
+                }
+            }
+            gamebox.Image = picShow;
+            gamebox.Refresh();
+            gamebox.Show();
+        }
+        public void RenderLog()
+        {
+            //background
+            g = Graphics.FromImage(picShow);
+            g.DrawImage(background, new Rectangle(0, 0, 640, 480));
+
+            Font myfont = new Font("Arial Rounded MT Bold", 50.0f);
+            PointF[] myp = new PointF[2] { new PointF(10, 10), new PointF(10, 150) };
+            //draw text
+            for (int i = 0; i < 2; i++)
+            {
+                if (logIndex == i)
+                {
+                    g.DrawString(log[i], myfont, Brushes.Red, myp[i]);
+                }
+                else
+                {
+                    g.DrawString(log[i], myfont, Brushes.Black, myp[i]);
+                }
+            }
+            if (username!=null)
+            g.DrawString(username,myfont,Brushes.GreenYellow,new PointF(10,80));
+            if (password != null)
+            {
+                string show="";
+                for (int i = 0; i < password.Length; i++)
+                {
+                    show += "*";
+                }
+                g.DrawString(show, myfont, Brushes.GreenYellow, new PointF(10, 220));
+            }
+
+
+            gamebox.Image = picShow;
+            gamebox.Refresh();
+            gamebox.Show();
         }
 
         public void Render(int index)
@@ -263,7 +383,96 @@ namespace Camfight
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (gamestate == GameState.GAME && acceptControl==true)
+            if(gamestate==GameState.GAME)
+            {
+                GameInputControl(e);
+            }
+            else if(gamestate==GameState.TITLE)
+            {
+                gamestate = GameState.MENU;
+                picShow = new Bitmap(640, 480);
+            }
+            else if (gamestate == GameState.MENU)
+            {
+                if(e.KeyData==Keys.Up)
+                {
+                    if (menuIndex > 0)
+                    {
+                        menuIndex--;
+                    }
+                }
+                else if (e.KeyData == Keys.Down)
+                {
+                    if (menuIndex < 1)
+                    {
+                        menuIndex++;
+                    }
+                }
+                else if (e.KeyData == Keys.Enter)
+                {
+                    if (menuIndex == 0)
+                    {
+                        gamestate=GameState.INTERNET;
+                        picShow = new Bitmap(640, 480);
+                    }
+                    else if (menuIndex == 1)
+                    {
+                        gamestate = GameState.TITLE;
+                        picShow = new Bitmap(640, 480);
+                        menuIndex = 0;
+                    }
+                }
+            }
+            else if (gamestate == GameState.INTERNET)
+            {
+                LoginInputControl(e);
+            }
+        }
+
+        private void LoginInputControl(KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Up)
+            {
+                logIndex = 0;
+            }
+            else if (e.KeyData == Keys.Down)
+            {
+                logIndex = 1;
+            }
+            else if (e.KeyValue>=65 && e.KeyValue<=90)
+            {
+                if (logIndex == 0 && username.Length<12)
+                    username += e.KeyData.ToString();
+                else if(logIndex==1 && password.Length<12)
+                    password += e.KeyData.ToString();
+            }
+            else if (e.KeyValue >= 48 && e.KeyValue <= 57)
+            {
+                if (logIndex == 0 && username.Length < 12)
+                    username += (e.KeyValue-48).ToString();
+                else if (logIndex == 1 && password.Length < 12)
+                    password += (e.KeyValue-48).ToString();
+            }
+            else if (e.KeyData == Keys.Back)
+            {
+                if (logIndex == 0 && username.Length != 0)
+                    username = username.Substring(0, username.Length - 1);
+                else if (logIndex == 1 && password.Length != 0)
+                    password = password.Substring(0, password.Length - 1);
+            }
+            else if (e.KeyData == Keys.Enter)
+            {
+                if (username != null && password != null && username != "" && password != "")
+                {
+                    ConnectToServer();
+                    gamestate = GameState.LOADING;
+                }
+            }
+        }
+
+        private void GameInputControl(KeyEventArgs e)
+        {
+            if (acceptControl == true)
             {
                 if (e.KeyData == Keys.D1)
                 {
@@ -371,7 +580,7 @@ namespace Camfight
                     myplayer.update(6);
                     playerStateMutex.ReleaseMutex();
                 }
-                packet play=new packet("play",enemyname,null,mystate);
+                packet play = new packet("play", enemyname, null, mystate);
                 SendPacket(play);
                 myplayerTimer.Start();
             }
@@ -391,7 +600,20 @@ namespace Camfight
             playerStateMutex.WaitOne();
             myplayer.update(0);
             playerStateMutex.ReleaseMutex();
-            myplayerTimer.Stop();   
+            myplayerTimer.Stop();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            
+            try
+            {
+                packet mypacket = new packet("q",username,null,-1);
+                SendPacket(mypacket);
+                quit();
+            }
+            catch 
+            { }
         }
     }
 }
