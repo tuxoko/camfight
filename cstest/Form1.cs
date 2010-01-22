@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
 
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -31,6 +35,12 @@ namespace cstest
         private Capture _capture;
         private bool _captureInProgress;
         private bool drawhist;
+
+        private double last_left_m00;
+        private double last_right_m00;
+        private int left_state=0;
+        private int right_state=0;
+
         /*
         private HaarCascade _haar;
         private static RangeF mrangef=new RangeF(0,180);
@@ -173,6 +183,60 @@ namespace cstest
 
             frame.Draw(FPU.face, new Bgr(255, 0, 0), 3);
 
+            try
+            {
+                MCvFont font = new MCvFont(FONT.CV_FONT_HERSHEY_PLAIN, 1, 1);
+                frame.Draw("left m00=" + FPU.left_mom.m00.ToString() + "  left ncm22=" + ((FPU.left_mom.mu02 + FPU.left_mom.mu20)/FPU.left_mom.m00).ToString(), ref font, new Point(20, 20), new Bgr(Color.Crimson));
+                frame.Draw("right m00=" + FPU.right_mom.m00.ToString() + "  right ncm22=" + ((FPU.right_mom.mu02 + FPU.right_mom.mu20) / FPU.right_mom.m00).ToString(), ref font, new Point(20, 40), new Bgr(Color.Crimson));
+            }
+            catch { }
+
+            if (FPU.left_mom.m00 > 1000000)
+            {
+                if (FPU.left_mom.m00 - last_left_m00>100000)
+                {
+                    left_state = 1;
+                }
+                else
+                {
+                    if (left_state > 0)
+                    {
+                        left_state++;
+                    }
+                }
+                if (left_state == 2)
+                {
+                    frame.Draw(new CircleF(FPU.center[0], 40f), new Bgr(Color.White), 2);
+                    left_state = 0;
+                }
+                else
+                {
+                    frame.Draw(new CircleF(FPU.center[0], 40f), new Bgr(Color.YellowGreen), 2);
+                }
+            }
+            else
+            {
+                    frame.Draw(new CircleF(FPU.center[0], 40f), new Bgr(Color.Red), 2);
+            }
+            if (FPU.right_mom.m00 > 1000000)
+            {
+                if (FPU.right_mom.m00 - last_right_m00>100000)
+                {
+                    frame.Draw(new CircleF(FPU.center[1], 40f), new Bgr(Color.White), 2);
+                }
+                else
+                {
+                    frame.Draw(new CircleF(FPU.center[1], 40f), new Bgr(Color.YellowGreen), 2);
+                }
+            }
+            else
+            {
+                frame.Draw(new CircleF(FPU.center[1], 40f), new Bgr(Color.Red), 2);
+            }
+
+            last_left_m00 = FPU.left_mom.m00;
+            last_right_m00 = FPU.right_mom.m00;
+
             captureImageBox.Image = frame;
             imageBox1.Image = FPU.backproject;
 
@@ -184,6 +248,7 @@ namespace cstest
 
                 drawhist = false;
             }
+
             sw.Stop();
             long t_interval = sw.ElapsedMilliseconds;
 
@@ -232,6 +297,19 @@ namespace cstest
 
         private void imageBox1_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            HistSerial hh=new HistSerial();
+            hh.hist=FPU._hist;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                FileStream fs = new FileStream(saveFileDialog1.FileName, FileMode.CreateNew);
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, hh);
+            }
 
         }
     }

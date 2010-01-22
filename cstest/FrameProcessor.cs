@@ -14,18 +14,24 @@ using Emgu.Util;
 using System.Threading;
 using Emgu.CV.CvEnum;
 
+[Serializable]
+public class HistSerial
+{
+    public DenseHistogram hist;
+}
+
 public class FrameProcessor
 {
     private HaarCascade _haar;
     private Rectangle face_rect;
     private Stopwatch sw;
     private bool th_check;
-    private Point[] center;
+    public Point[] center;
 
     //some parameters
-    private int backproj_threshold=100;
+    private int backproj_threshold=80;
     private double kmeans_scale = 16;
-    private int hand_size = 100;
+    private int hand_size = 150;
 
     public bool isTracked = false;
     public DenseHistogram _hist;
@@ -37,6 +43,7 @@ public class FrameProcessor
     public bool have_right;
     public Image<Gray, Byte> backproject;
     public double mass;
+    public MCvMoments left_mom, right_mom;
 
     public long t_facedetect;
     public long t_hue;
@@ -50,6 +57,14 @@ public class FrameProcessor
         sw = new Stopwatch();
         Reset();
 	}
+
+    public void SetHist(DenseHistogram hist)
+    {
+        Reset();
+        _hist = hist;
+        isTracked = true;
+    }
+
     public void ProcessFrame(Image<Bgr, Byte> frame)
     {
         sw.Reset();
@@ -63,7 +78,7 @@ public class FrameProcessor
         Image<Hsv, Byte> hsv = frame.Convert<Hsv, Byte>();
         Image<Gray, Byte> hue = new Image<Gray, byte>(frame.Width, frame.Height);
         Image<Gray, Byte> mask = new Image<Gray, byte>(frame.Width, frame.Height);
-        Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 10, 0), new MCvScalar(180, 256, 256, 0), mask);
+        Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 30, 0), new MCvScalar(180, 256, 256, 0), mask);
         Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
         if (isTracked == false)
@@ -109,10 +124,11 @@ public class FrameProcessor
 
         sw.Reset();
         sw.Start();
-        center = kmeans(center, backproject, face_rect, kmeans_scale);
-        foreach (Point p in center)
+        
+        if (isTracked)
         {
-            frame.Draw(new CircleF(p, 20f), new Bgr(Color.Red), 2);
+            center = kmeans(center, backproject, face_rect, kmeans_scale);
+            center = refine_center(center, backproject);
         }
         sw.Stop();
         t_kmeans = sw.ElapsedMilliseconds;
@@ -122,20 +138,12 @@ public class FrameProcessor
         sw.Start();
         left = new Rectangle(center[0].X - hand_size / 2, center[0].Y - hand_size / 2, hand_size, hand_size);
         right = new Rectangle(center[1].X - hand_size / 2, center[1].Y - hand_size / 2, hand_size, hand_size);
-        frame.Draw(left,new Bgr(Color.Chocolate),2);
-        frame.Draw(right,new Bgr(Color.Chocolate),2);
         backproject.ROI = left;
-        MCvMoments left_mom=backproject.GetMoments(false);
+        left_mom=backproject.GetMoments(false);
         backproject.ROI = right;
-        MCvMoments right_mom = backproject.GetMoments(false);
+        right_mom = backproject.GetMoments(false);
         Emgu.CV.CvInvoke.cvResetImageROI(backproject);
-        try
-        {
-            MCvFont font = new MCvFont(FONT.CV_FONT_HERSHEY_PLAIN, 1, 1);
-            frame.Draw("left m00=" + left_mom.m00.ToString() + "\nleft ncm22=" + (left_mom.GetCentralMoment(2, 0)+left_mom.GetCentralMoment(0, 2)).ToString()
-                + "\nright m00=" + right_mom.m00.ToString() + "\nright ncm22=" + (right_mom.GetCentralMoment(2, 0) + right_mom.GetCentralMoment(0, 2)).ToString(), ref font, new Point(20, 20), new Bgr(Color.Crimson));
-        }
-        catch { }
+        
         sw.Stop();
         t_hand = sw.ElapsedMilliseconds;
     }
@@ -323,5 +331,30 @@ public class FrameProcessor
             }
         }
         return n;
+    }
+    private Point[] refine_center(Point[] last_center, Image<Gray, Byte> img)
+    {
+        Point[] center = last_center.Clone() as Point[];
+        for (int iter = 0; iter < 3; iter++)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                Rectangle ROI = new Rectangle(Math.Max(center[i].X - 50,0),Math.Max( center[i].Y - 50,0),Math.Min(center[i].X+50,img.Width),Math.Min(center[i].Y+50,img.Height));
+                ROI.Width -= ROI.X;
+                ROI.Height -= ROI.Y;
+                try
+                {
+                    Emgu.CV.CvInvoke.cvSetImageROI(img, ROI);
+                    if (img.GetMoments(false).GravityCenter.x > 0)
+                    {
+                        center[i].X = ROI.X + (int)img.GetMoments(false).GravityCenter.x;
+                        center[i].Y = ROI.Y + (int)img.GetMoments(false).GravityCenter.y;
+                    }
+                }
+                catch { }
+                Emgu.CV.CvInvoke.cvResetImageROI(img);
+            }
+        }
+        return center;
     }
 }
