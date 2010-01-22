@@ -18,13 +18,18 @@ namespace Camfight
     {
         public void SetAnimation()
         {
-            int []index = new int[9] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+            int []index = new int[12] { 0, 1, 2, 3, 4, 5, 6, 7, 8,9,10,11 };
             for (int i = 0; i < 9; i++)
             {
                 animationMove[i] = new ArrayList();
             }
             //set idle
-            animationMove[0].Add(index[0]);
+            for (int i = 0; i < 2; i++) animationMove[0].Add(index[10]);
+            for (int i = 0; i < 2; i++) animationMove[0].Add(index[0]);
+            for (int i = 0; i < 2; i++) animationMove[0].Add(index[11]);
+            for (int i = 0; i < 2; i++) animationMove[0].Add(index[0]);
+            for (int i = 0; i < 2; i++) animationMove[0].Add(index[11]);
+            for (int i = 0; i < 2; i++) animationMove[0].Add(index[10]);
             
             //set idle_lh
             animationMove[1].Add(index[0]);

@@ -55,6 +55,7 @@ namespace Camfight
         private int count = 0;
         private int playtime = 120;
         private bool playAnimation = false;
+        private bool playIdle = false;
         
         //Thread for listening
         private TcpClient _tcpl = null;
@@ -145,7 +146,7 @@ namespace Camfight
                     IFormatter formatter = new BinaryFormatter();
                     //NetworkStream nets = _tcpl.GetStream();
                     packet receiveobj = (packet)formatter.Deserialize(nets);
-                    MessageBox.Show(receiveobj.Cmd);
+
                     switch (receiveobj.Cmd)
                     {
                         case ("e"):
@@ -200,176 +201,19 @@ namespace Camfight
 
         private void LoadingEnemyContent(string type)
         {
-            if(type=="0")
-                enemy = new Player("player1",Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh);
-            else if(type=="1")
-                enemy = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh);
+            //if(type=="0")
+                enemy = new Player("player1",Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh,Resources.player1_2,Resources.player1_1,Resources.player1_3);
+            //else if(type=="1")
+              //  enemy = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh,null,null,null);
         }
         private void LoadingContent()
         {   
             background = Resources.SPback;
-            myplayer = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh);
+            myplayer = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh,null,null,null);
             //enemy = new Player("player1", Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh);
         }
 
-        public void GameDraw(Object myObject,EventArgs myEventArgs)
-        {
-            if (gamestate == GameState.TITLE)
-	        {
-                RenderTitle();
-            }
-            else if (gamestate == GameState.MENU)
-            {
-                RenderMenu();
-            }
-            else if (gamestate == GameState.INTERNET)
-            {
-                RenderLog();
-            }
-            else if (gamestate == GameState.GAME)
-            {
-                if (++count >= 10)
-                {
-                    count -= 10;
-                    playtime--;
-                }
-                if (playAnimation == false)//no animation playing now
-                {
-                    if (myAnimation.Count != 0)
-                    {
-                        aniMutex.WaitOne();
-                        nowplay = myAnimation.Dequeue() as Animation;
-                        aniMutex.ReleaseMutex();
-                        playindex = 0;
-                        playMutex.WaitOne();
-                        playAnimation = true;
-                        playMutex.ReleaseMutex();
-                    }
-                    else
-                    {
-                        Render(-1);
-                    }
-                }
-                if (playAnimation == true)
-                {
-                    if (playindex < nowplay.PlaySeq.Count)
-                        Render((int)nowplay.PlaySeq[playindex++]);
-                    if (playindex == nowplay.PlaySeq.Count)
-                    {
-                        playMutex.WaitOne();
-                        playAnimation = false;
-                        playMutex.ReleaseMutex();
-                    }
-                }
-            }
-            
-
-            if (playtime == 0) myTimer.Stop();
-        }
-
-        public void RenderTitle()
-        {
-            //background
-            g = Graphics.FromImage(picShow);
-            g.DrawImage(background,new Rectangle(0,0,640,480));
-            //title
-            Font myfont = new Font("Arial Rounded MT Bold", 70.0f);
-            g.DrawString("CAMFIGHT", myfont, Brushes.Black, new PointF(59, 24));
-            g.DrawString("CAMFIGHT",myfont,Brushes.DarkOrange,new PointF(55,20));
-
-            Font myfont2 = new Font("Arial Bold",50.0f);
-            g.DrawString("START", myfont2, Brushes.Black, new PointF(204, 304));
-            g.DrawString("START", myfont2, Brushes.Red, new PointF(200, 300));
-            gamebox.Image = picShow;
-            gamebox.Refresh();
-            gamebox.Show();
-        }
-
-        public void RenderMenu()
-        {
-            //background
-            g = Graphics.FromImage(picShow);
-            g.DrawImage(background, new Rectangle(0, 0, 640, 480));
-
-            Font myfont = new Font("Arial Rounded MT Bold", 60.0f);
-            PointF [] myp = new PointF[2]{new PointF(10,10),new PointF(10,90)};
-            //draw text
-            for (int i = 0; i < 2; i++)
-            {
-                if (menuIndex == i)
-                {
-                    g.DrawString(menus[i], myfont, Brushes.Red, myp[i]);
-                }
-                else
-                {
-                    g.DrawString(menus[i],myfont,Brushes.Black,myp[i]);
-                }
-            }
-            gamebox.Image = picShow;
-            gamebox.Refresh();
-            gamebox.Show();
-        }
-        public void RenderLog()
-        {
-            //background
-            g = Graphics.FromImage(picShow);
-            g.DrawImage(background, new Rectangle(0, 0, 640, 480));
-
-            Font myfont = new Font("Arial Rounded MT Bold", 50.0f);
-            PointF[] myp = new PointF[2] { new PointF(10, 10), new PointF(10, 150) };
-            //draw text
-            for (int i = 0; i < 2; i++)
-            {
-                if (logIndex == i)
-                {
-                    g.DrawString(log[i], myfont, Brushes.Red, myp[i]);
-                }
-                else
-                {
-                    g.DrawString(log[i], myfont, Brushes.Black, myp[i]);
-                }
-            }
-            if (username!=null)
-            g.DrawString(username,myfont,Brushes.GreenYellow,new PointF(10,80));
-            if (password != null)
-            {
-                string show="";
-                for (int i = 0; i < password.Length; i++)
-                {
-                    show += "*";
-                }
-                g.DrawString(show, myfont, Brushes.GreenYellow, new PointF(10, 220));
-            }
-
-
-            gamebox.Image = picShow;
-            gamebox.Refresh();
-            gamebox.Show();
-        }
-
-        public void Render(int index)
-        {
-            //background 
-            g = Graphics.FromImage(picShow);
-            g.DrawImage(background, new Rectangle(0, 0, 640, 480));
-            Font myfont = new Font("Arial Rounded MT Bold", 30.0f);
-
-            g.DrawString("LIFE:" + myplayer.Life.ToString(), myfont, Brushes.Yellow, new PointF(10, 10));
-            
-
-            //Draw game time
-            g.DrawString("TIME " + playtime.ToString(), myfont, Brushes.Red, new PointF(300, 10));
-
-            //player drawing
-            if (index == -1)
-                enemy.draw(g, 0);
-            else
-                enemy.draw(g, index);
-
-            gamebox.Image = picShow;
-            gamebox.Refresh();
-            gamebox.Show();
-        }
+       
 
         public void EnemyMove(packet receiveobj)
         {
@@ -472,97 +316,7 @@ namespace Camfight
 
         private void GameInputControl(KeyEventArgs e)
         {
-            if (acceptControl == true)
-            {
-                if (e.KeyData == Keys.D1)
-                {
-                    ArrayList seq = animationMove[0].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(0);
-                    enemy.update(0);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D2)
-                {
-                    ArrayList seq = animationMove[1].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(1);
-                    enemy.update(1);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D3)
-                {
-                    ArrayList seq = animationMove[2].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(2);
-                    enemy.update(2);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D4)
-                {
-                    ArrayList seq = animationMove[3].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(3);
-                    enemy.update(3);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D5)
-                {
-                    ArrayList seq = animationMove[4].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(4);
-                    enemy.update(4);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D6)
-                {
-                    ArrayList seq = animationMove[5].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(5);
-                    enemy.update(5);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D7)
-                {
-                    ArrayList seq = animationMove[6].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(6);
-                    enemy.update(6);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D8)
-                {
-                    ArrayList seq = animationMove[7].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(7);
-                    enemy.update(7);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-                else if (e.KeyData == Keys.D9)
-                {
-                    ArrayList seq = animationMove[8].Clone() as ArrayList;
-                    aniMutex.WaitOne();
-                    myplayer.isHit(8);
-                    enemy.update(8);
-                    myAnimation.Enqueue(new Animation("player1", seq));
-                    aniMutex.ReleaseMutex();
-                }
-
-                controlMutex.WaitOne();
-                acceptControl = false;
-                controlMutex.ReleaseMutex();
-
-                controlTimer.Start();
-            }
-
+            
             int mystate = 0;
             if (gamestate == GameState.GAME)
             {

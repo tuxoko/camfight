@@ -87,6 +87,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Render.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\player1.png" />
@@ -147,6 +150,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SPback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player1_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player1_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player1_3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

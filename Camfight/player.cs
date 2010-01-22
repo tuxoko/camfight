@@ -33,9 +33,12 @@ namespace Camfight
             get { return type; }
         }
         private string type;
-        public Player(string type,Image img, Image img_lh, Image img_rh,Image img_left, Image img_left_lh, Image img_left_rh,Image img_right, Image img_right_lh,Image img_right_rh)
+
+        public int x;
+        public int y;
+        public Player(string type,Image img, Image img_lh, Image img_rh,Image img_left, Image img_left_lh, Image img_left_rh,Image img_right, Image img_right_lh,Image img_right_rh,Image im_idle_1,Image im_idle_2,Image im_idle_3)
         {
-            player=new Image[9]{img,img_lh,img_rh,img_left,img_left_lh,img_left_rh,img_right,img_right_lh,img_right_rh};
+            player=new Image[12]{img,img_lh,img_rh,img_left,img_left_lh,img_left_rh,img_right,img_right_lh,img_right_rh,im_idle_1,im_idle_2,im_idle_3};
             life = 100;
             isalive = true;
             state = 0;
