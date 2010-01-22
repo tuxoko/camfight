@@ -33,12 +33,33 @@ namespace Mypacket
             }
             private string name;
 
-            public packet(string cmd, string name, string msg, int move)
+            public int Time
+            {
+                get { return time; }
+            }
+            private int time;
+
+            public int Sector
+            {
+                get { return sector; }
+            }
+            private int sector;
+
+            public bool Big
+            {
+                get { return big; }
+            }
+            private bool big;
+
+            public packet(string cmd, string name, string msg, int move, int time ,int sector ,bool big)
             {
                 this.cmd = cmd;
                 this.name = name;
                 this.msg = msg;
                 this.move = move;
+                this.time = time;
+                this.sector = sector;
+                this.big = big;
             }
         }
 }

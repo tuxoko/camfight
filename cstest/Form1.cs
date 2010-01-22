@@ -18,6 +18,8 @@ using Emgu.Util;
 using System.Threading;
 using Emgu.CV.CvEnum;
 
+using Hist;
+
 namespace cstest
 {
     public partial class Form1 : Form

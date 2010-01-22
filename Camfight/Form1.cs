@@ -21,6 +21,7 @@ using Emgu.CV.Structure;
 using Emgu.Util;
 using System.Threading;
 using Emgu.CV.CvEnum;
+using Hist;
 
 namespace Camfight
 {
@@ -118,8 +119,8 @@ namespace Camfight
 
             IFormatter formatter = new BinaryFormatter();
             FileStream fs = new FileStream("../../hist.dat", FileMode.Open);
-            hist = (DenseHistogram)formatter.Deserialize(fs);
-
+            HistSerial hs = (HistSerial)formatter.Deserialize(fs);
+            hist = hs.hist;
             FPU.SetHist(hist);
         }
         private void reset()
@@ -140,7 +141,7 @@ namespace Camfight
                 _tcpl.Connect(serverhost);
                 nets = _tcpl.GetStream();
 
-                packet mypacket = new packet("l",username,password,0);
+                packet mypacket = new packet("l",username,password,0,0,0,false);
 
                 IFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(nets,mypacket);
@@ -363,7 +364,7 @@ namespace Camfight
                     myplayer.update(6);
                     playerStateMutex.ReleaseMutex();
                 }
-                packet play = new packet("play", enemyname, null, mystate);
+                packet play = new packet("play", enemyname, null, mystate,0,0,false);
                 SendPacket(play);
                 myplayerTimer.Start();
             }
@@ -391,7 +392,7 @@ namespace Camfight
             
             try
             {
-                packet mypacket = new packet("q",username,null,-1);
+                packet mypacket = new packet("q",username,null,-1,0,0,false);
                 SendPacket(mypacket);
                 quit();
             }
