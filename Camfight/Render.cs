@@ -39,12 +39,14 @@ namespace Camfight
             }
             else if (gamestate == GameState.GAME)
             {
-                if (++count >= 40)
+                /*if (++count >= 40)
                 {
                     count -= 40;
                     playtime--;
-                }
-                
+                }*/
+
+                playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
+
                 if (playAnimation == false)//no animation playing now
                 {
                     if (myAnimation.Count != 0)

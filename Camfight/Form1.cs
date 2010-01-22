@@ -15,6 +15,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Mypacket;
 using System.IO;
+using System.Diagnostics;
 
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -99,6 +100,8 @@ namespace Camfight
 
         private FrameProcessor FPU;
         private DenseHistogram hist;
+
+        private Stopwatch sw = new Stopwatch();
 
         public Form1()
         {
@@ -227,6 +230,8 @@ namespace Camfight
             //Application.Idle += new EventHandler(ProcessFrame);
             fpu_thr = new Thread(new ThreadStart(ProcessFrame));
             fpu_thr.Start();
+            sw.Reset();
+            sw.Start();
         }
 
         private void LoadingEnemyContent(string type)
