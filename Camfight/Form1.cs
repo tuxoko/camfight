@@ -20,7 +20,6 @@ using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
-using System.Threading;
 using Emgu.CV.CvEnum;
 using Hist;
 
@@ -186,7 +185,10 @@ namespace Camfight
                         case ("quit"):
                             break;
                         case ("play"):
-                            EnemyMove(receiveobj);
+                            if (receiveobj.Name == username)
+                                EnemyMove(receiveobj);
+                            else
+                                mymove(receiveobj);
                             break;
                         default:
                             break;
@@ -252,12 +254,55 @@ namespace Camfight
 
         public void EnemyMove(packet receiveobj)
         {
-            enemy.update(receiveobj.Move);
-            myplayer.isHit(receiveobj.Move);
-            ArrayList seq = animationMove[receiveobj.Move].Clone() as ArrayList;
+            enemy.update(receiveobj.Sector & 0xF);
+            int i = 0;
+
+            //right
+            if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
+            {
+                myplayer.isHit((receiveobj.Sector & 0xF00)>>8);
+                i = 2;
+            }
+            //left
+            if((receiveobj.Sector & 0xF00) >> 8 == 0xF) {
+                myplayer.isHit((receiveobj.Sector & 0xF0)>>4);
+                i = 1;
+            }
+
+            int face_sec = receiveobj.Sector & 0xF;
+
+            if (face_sec / 3 < 2)
+            {
+                i += 3;
+            }
+            else if (face_sec / 3 > 2)
+            {
+                i += 6;
+            }
+
+            ArrayList seq = animationMove[i].Clone() as ArrayList;            
             aniMutex.WaitOne();
             myAnimation.Enqueue(new Animation("player1", seq));
             aniMutex.ReleaseMutex();
+        }
+
+        public void mymove(packet receiveobj)
+        {
+            myplayer.update(receiveobj.Sector & 0xF);
+            int i = 0;
+
+            //right
+            if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
+            {
+                enemy.isHit((receiveobj.Sector & 0xF00) >> 8);
+                i = 2;
+            }
+            //left
+            if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
+            {
+                enemy.isHit((receiveobj.Sector & 0xF0) >> 4);
+                i = 1;
+            }
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)

@@ -29,7 +29,19 @@ namespace Camfight
                 this.Invoke(new InvokeFunction(pictureBox1.Show));
                 //pictureBox1.Refresh();
                 //pictureBox1.Show();
+
+                int face_sector = GetSector(new Point(FPU.face.X + FPU.face.Width / 2, FPU.face.Y + FPU.face.Height / 2),frame.Size);
+                int left_sector = GetSector(FPU.center[1],frame.Size);
+                int right_sector = GetSector(FPU.center[0],frame.Size);
             }
+        }
+
+        private int GetSector(Point center,Size frame_size)
+        {
+            int sec=0;
+            sec = center.X / (frame_size.Width / 5) * 3;
+            sec += center.Y / (frame_size.Height / 3);
+            return sec;
         }
     }
 }
