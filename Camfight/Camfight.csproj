@@ -185,12 +185,6 @@
     <None Include="Resources\player1_3.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\BGL.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\BGR.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\H1.png" />
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +198,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Bang.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BGL.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BGR.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

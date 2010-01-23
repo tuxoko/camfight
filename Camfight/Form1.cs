@@ -63,7 +63,7 @@ namespace Camfight
         //use for time counting
         private int count = 0;
         private int anicount = 0;
-        private int playtime = 120;
+        private int playtime = 20;
         private bool playAnimation = false;
         private bool playIdle = false;
         
@@ -190,9 +190,10 @@ namespace Camfight
                             //GameStart(receiveobj);
                             break;
                         case ("m"):
-                            this.Invoke(new InvokeFunction(this.quit), new object[] {  }); 
+                            this.Invoke(new InvokeFunction(this.quit), new object[] { });
                             break;
-                        case ("quit"):
+                        case ("q"):
+                            this.Invoke(new InvokeFunction3(this.GameOver), new object[] { "w" });
                             break;
                         case ("play"):
                             if (receiveobj.Name == username)
@@ -205,6 +206,8 @@ namespace Camfight
                     }
                 }
             }
+            catch (ThreadAbortException e)
+            { }
             catch { quit(); }
         }
 
@@ -295,12 +298,12 @@ namespace Camfight
                 myAnimation.Enqueue(new Animation("player1", seq));
                 aniMutex.ReleaseMutex();
             */
-            /*
+            
             if (enemy.IsAlive == false)//win this game
             {
-                this.Invoke(new InvokeFunction(this.quit), new object[] { });
+               // this.Invoke(new InvokeFunction(this.quit), new object[] { });
                 this.Invoke(new InvokeFunction3(this.GameOver), new object[] {"w" });
-            }*/
+            }
 
             aniMutex.WaitOne();
             playstate = i;
@@ -335,12 +338,12 @@ namespace Camfight
                 enemy.isHit(sector1);
                 i = 1;
             }
-            /*
+            
             if (myplayer.IsAlive == false)//win this game
             {
-                this.Invoke(new InvokeFunction(this.quit), new object[] { });
+            //    this.Invoke(new InvokeFunction(this.quit), new object[] { });
                 this.Invoke(new InvokeFunction3(this.GameOver), new object[] { "l" });
-            }*/
+            }
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -391,8 +394,8 @@ namespace Camfight
             }
             else if (gamestate == GameState.END)
             {
-                if (e.KeyData == Keys.Left) retry = true;
-                else if (e.KeyData == Keys.Right) retry = false;
+                if (e.KeyData == Keys.Left || e.KeyData == Keys.Up) retry = true;
+                else if (e.KeyData == Keys.Right || e.KeyData == Keys.Down) retry = false;
                 else if (e.KeyData == Keys.Enter)
                 {
                     if (retry == true)
@@ -506,7 +509,23 @@ namespace Camfight
 
         private void GameOver(string cmd)
         {
-            gamestate = GameState.END;
+            
+            try
+            {
+                packet mypacket = new packet("q", username, null, -1, 0, 0, false);
+                SendPacket(mypacket);
+            }
+            catch { }
+            try
+            {
+                if (listenthr != null)
+                    listenthr.Abort();
+                   listenthr = null;            
+                if (fpu_thr != null)
+                    fpu_thr.Abort();
+                fpu_thr = null;
+            }
+            catch { }
             if (cmd == "w")
             {
                 gameoverIndex = 0;
@@ -519,7 +538,7 @@ namespace Camfight
             {
                 gameoverIndex = 2 ;
             }
-            
+            gamestate = GameState.END;
         }
     }
 }
