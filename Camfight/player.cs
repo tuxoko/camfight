@@ -55,10 +55,12 @@ namespace Camfight
             if (sector < 6)
             {
                 this.x -= v;
+                if (this.x < 0) this.x = 0;
             }
             else if (sector >= 9)
             {
                 this.x += v;
+                if (this.x > 300) this.x = 300;
             }
         }
         public void isHit(int sector)

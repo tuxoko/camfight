@@ -19,6 +19,7 @@ namespace Camfight
 {
     public partial class Form1 : Form
     {
+        private int playstate = 0;
         public void GameDraw(Object myObject, EventArgs myEventArgs)
         {
             if (gamestate == GameState.TITLE)
@@ -46,7 +47,7 @@ namespace Camfight
                 }*/
 
                 playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
-
+                /*
                 if (playAnimation == false)//no animation playing now
                 {
                     if (myAnimation.Count != 0)
@@ -104,10 +105,12 @@ namespace Camfight
                         playAnimation = false;
                         playMutex.ReleaseMutex();
                     }
-                }
+                }*/
+
+                aniMutex.WaitOne();
+                Render(playstate);
+                aniMutex.ReleaseMutex();
             }
-
-
             if (playtime == 0) myTimer.Stop();
         }
 

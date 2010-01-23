@@ -36,10 +36,21 @@ namespace Camfight
                 int left_sector = GetSector(FPU.center[1],frame.Size);
                 int right_sector = GetSector(FPU.center[0],frame.Size);
 
+
                 int sector = (right_sector << 8) + (left_sector << 4) + face_sector;
+
+                if (FPU.have_left_punch == true)
+                {
+                    sector = sector | 0xF00;
+                }
+                else if (FPU.have_right_punch == true)
+                {
+                    sector = sector | 0xF0;
+                }
 
                 packet pac = new packet("play", enemyname, "", 0, 0, sector, false);
                 SendPacket(pac);
+                
             }
         }
 

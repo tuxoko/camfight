@@ -156,7 +156,7 @@ namespace Camfight
             catch
             {
                 MessageBox.Show("連線錯誤");
-                reset();
+                quit();
             }
         }
 
@@ -261,34 +261,43 @@ namespace Camfight
             if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
             {
                 myplayer.isHit((receiveobj.Sector & 0xF00)>>8);
-                i = 2;
+                i = 1;
             }
             //left
             if((receiveobj.Sector & 0xF00) >> 8 == 0xF) {
                 myplayer.isHit((receiveobj.Sector & 0xF0)>>4);
-                i = 1;
+                i = 2;
             }
 
             int face_sec = receiveobj.Sector & 0xF;
 
             if (face_sec / 3 < 2)
             {
-                i += 3;
+                i += 6;
             }
             else if (face_sec / 3 > 2)
             {
-                i += 6;
+                i += 3;
             }
-
-            ArrayList seq = animationMove[i].Clone() as ArrayList;            
+             /*
+                ArrayList seq = animationMove[i].Clone() as ArrayList;
+                aniMutex.WaitOne();
+                myAnimation.Enqueue(new Animation("player1", seq));
+                aniMutex.ReleaseMutex();
+            */
             aniMutex.WaitOne();
-            myAnimation.Enqueue(new Animation("player1", seq));
+            playstate = i;
             aniMutex.ReleaseMutex();
         }
 
         public void mymove(packet receiveobj)
         {
-            myplayer.update(receiveobj.Sector & 0xF);
+            int sector=14-((receiveobj.Sector & 0xF));
+            if (sector % 3 == 0) sector += 2;
+            else if (sector % 3 == 2) sector -= 2;
+           
+            myplayer.update(sector);
+
             int i = 0;
 
             //right
@@ -389,7 +398,7 @@ namespace Camfight
                 if (username != null && password != null && username != "" && password != "")
                 {
                     ConnectToServer();
-                    gamestate = GameState.LOADING;
+                    if(listenthr!=null) gamestate = GameState.LOADING;
                 }
             }
         }
