@@ -113,7 +113,19 @@ namespace Camfight
                 Render(playstate);
                 aniMutex.ReleaseMutex();
             }
-            if (playtime == 0) myTimer.Stop();
+            else
+            {
+                RenderGameOver();
+            }
+            if (playtime == 0)
+            {
+                myTimer.Stop();
+                /*
+                quit();
+                if (enemy.Life > myplayer.Life) GameOver("l");
+                else if (enemy.Life < myplayer.Life) GameOver("w");
+                else GameOver("t");*/
+            }
         }
 
 
@@ -231,7 +243,7 @@ namespace Camfight
             g.DrawString("TIME " + playtime.ToString(), myfont, Brushes.Red, new PointF(300, 10));*/
             //Draw life bar and game info
             Font myfont = new Font("Arial Rounded MT Bold", 23.0f);
-            Font name=new Font("Arial",15.0f);
+            Font name=new Font("Arial Bold",15.0f);
             
 
             g.FillPolygon(Brushes.Red, new PointF[4]{p1[0],new PointF(p1[1].X-(100-myplayer.Life)*(280/100),p1[1].Y),new PointF(p1[2].X-(100-myplayer.Life)*(280/100),p1[2].Y),p1[3]});
@@ -240,9 +252,12 @@ namespace Camfight
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p2);
 
             g.DrawString(playtime.ToString(), myfont, Brushes.Blue, new PointF(286, 10));
+            
+            g.DrawString(username, name, Brushes.Black, new PointF(17, 37));
+            g.DrawString(username, name, Brushes.HotPink, new PointF(15, 35));
 
-            g.DrawString(username, name, Brushes.Blue, new PointF(15, 35));
-            g.DrawString(enemyname, name, Brushes.DeepSkyBlue, new PointF(600, 35));
+            g.DrawString(enemyname, name, Brushes.Black, new PointF(522, 37));
+            g.DrawString(enemyname, name, Brushes.DeepSkyBlue, new PointF(520, 35));
 
             //player drawing
             if (index == -1)
@@ -253,6 +268,11 @@ namespace Camfight
             {
                 enemy.draw(g, index);
             }
+
+            if (FPU.have_left_punch)
+                g.DrawImage(Resources.Bang, 640 - FPU.center[1].X - 95, FPU.center[1].Y - 95,300,260);
+            if (FPU.have_right_punch)
+                g.DrawImage(Resources.Bang, 640 - FPU.center[0].X - 95, FPU.center[0].Y - 95, 300, 260);
             //Draw left hand
             if(FPU.have_left)
             myplayer.drawLeft(g,640-FPU.center[1].X-80,FPU.center[1].Y-80);
@@ -265,6 +285,25 @@ namespace Camfight
             gamebox.Image = picShow;
             gamebox.Refresh();
             gamebox.Show();
+        }
+        public void RenderGameOver()
+        {
+            g = Graphics.FromImage(picShow);
+            g.DrawImage(background, new Rectangle(0, 0, 640, 480));
+
+            Font myfont = new Font("Arial Rounded MT Bold", 30.0f);
+            g.DrawString(msg[gameoverIndex],myfont,Brushes.Red,new PointF(200,100));
+
+            if (retry == true)
+            {
+                g.DrawString("Play Again", myfont, Brushes.Red, new PointF(150, 200));
+                g.DrawString("Quit",myfont,Brushes.Black,new PointF(150,300));
+            }
+            else
+            {
+                g.DrawString("Play Again", myfont, Brushes.Black, new PointF(150, 200));
+                g.DrawString("Quit", myfont, Brushes.Red, new PointF(150, 300));
+            }
         }
     }
 }

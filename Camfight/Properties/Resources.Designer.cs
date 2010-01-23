@@ -60,6 +60,13 @@ namespace Camfight.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Bang {
+            get {
+                object obj = ResourceManager.GetObject("Bang", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap BGL {
             get {
                 object obj = ResourceManager.GetObject("BGL", resourceCulture);

@@ -33,7 +33,8 @@ namespace Camfight
             MENU=1,
             INTERNET=2,
             LOADING=3,
-            GAME=4
+            GAME=4,
+            END=5
         };
 
         //player object
@@ -94,8 +95,14 @@ namespace Camfight
         private int logIndex = 0;
         private string[] log = new string[2] { "Username", "Password" };
 
+        //game over
+        private string[] msg = new string[3] { "You Win","You Lose","Game Tied"};
+        private int gameoverIndex = 0;
+        private bool retry = true;
+
         private delegate void InvokeFunction();
         private delegate void InvokeFunction2(packet pac);
+        private delegate void InvokeFunction3(string cmd);
 
         private FrameProcessor FPU;
         private DenseHistogram hist;
@@ -132,6 +139,9 @@ namespace Camfight
             password = "";
             logIndex = 0;
             menuIndex = 0;
+            gameoverIndex = 0;
+            FPU.Reset();
+            FPU.SetHist(hist);
         }
         private void ConnectToServer()
         {
@@ -261,12 +271,12 @@ namespace Camfight
             if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
             {
                 myplayer.isHit((receiveobj.Sector & 0xF00)>>8);
-                i = 1;
+                i = 2;
             }
             //left
             if((receiveobj.Sector & 0xF00) >> 8 == 0xF) {
                 myplayer.isHit((receiveobj.Sector & 0xF0)>>4);
-                i = 2;
+                i = 1;
             }
 
             int face_sec = receiveobj.Sector & 0xF;
@@ -285,6 +295,13 @@ namespace Camfight
                 myAnimation.Enqueue(new Animation("player1", seq));
                 aniMutex.ReleaseMutex();
             */
+            /*
+            if (enemy.IsAlive == false)//win this game
+            {
+                this.Invoke(new InvokeFunction(this.quit), new object[] { });
+                this.Invoke(new InvokeFunction3(this.GameOver), new object[] {"w" });
+            }*/
+
             aniMutex.WaitOne();
             playstate = i;
             aniMutex.ReleaseMutex();
@@ -303,7 +320,7 @@ namespace Camfight
             //right
             if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
             {
-                int sector1 = 14 - ((receiveobj.Sector & 0xF00));
+                int sector1 = 14 - ((receiveobj.Sector & 0xF00)>>8);
                 if (sector1 % 3 == 0) sector1 += 2;
                 else if (sector1 % 3 == 2) sector1 -= 2;
                 enemy.isHit(sector1);
@@ -312,12 +329,18 @@ namespace Camfight
             //left
             if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
             {
-                int sector1 = 14 - ((receiveobj.Sector & 0xF0));
+                int sector1 = 14 - ((receiveobj.Sector & 0xF0)>>4);
                 if (sector1 % 3 == 0) sector1 += 2;
                 else if (sector1 % 3 == 2) sector1 -= 2;
                 enemy.isHit(sector1);
                 i = 1;
             }
+            /*
+            if (myplayer.IsAlive == false)//win this game
+            {
+                this.Invoke(new InvokeFunction(this.quit), new object[] { });
+                this.Invoke(new InvokeFunction3(this.GameOver), new object[] { "l" });
+            }*/
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -365,6 +388,22 @@ namespace Camfight
             else if (gamestate == GameState.INTERNET)
             {
                 LoginInputControl(e);
+            }
+            else if (gamestate == GameState.END)
+            {
+                if (e.KeyData == Keys.Left) retry = true;
+                else if (e.KeyData == Keys.Right) retry = false;
+                else if (e.KeyData == Keys.Enter)
+                {
+                    if (retry == true)
+                    {
+                        reset();
+                    }
+                    else
+                    {
+                        this.Close();
+                    }
+                }
             }
         }
 
@@ -463,6 +502,24 @@ namespace Camfight
             }
             catch 
             { }
+        }
+
+        private void GameOver(string cmd)
+        {
+            gamestate = GameState.END;
+            if (cmd == "w")
+            {
+                gameoverIndex = 0;
+            }
+            else if(cmd=="l")
+            {
+                gameoverIndex = 1;
+            }
+            else
+            {
+                gameoverIndex = 2 ;
+            }
+            
         }
     }
 }
