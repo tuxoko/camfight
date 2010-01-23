@@ -20,6 +20,8 @@ namespace Camfight
     public partial class Form1 : Form
     {
         private int playstate = 0;
+        private PointF[] p1 = new PointF[4] { new PointF(15, 10), new PointF(295, 10), new PointF(285, 30), new PointF(5, 30) };
+        private PointF[] p2 = new PointF[4] { new PointF(345, 10), new PointF(625, 10), new PointF(635, 30), new PointF(355, 30) };
         public void GameDraw(Object myObject, EventArgs myEventArgs)
         {
             if (gamestate == GameState.TITLE)
@@ -118,8 +120,11 @@ namespace Camfight
         public void RenderTitle()
         {
             //background
+            
             g = Graphics.FromImage(picShow);
             g.DrawImage(background, new Rectangle(0, 0, 640, 480));
+            
+            
             //title
             Font myfont = new Font("Arial Rounded MT Bold", 70.0f);
             g.DrawString("CAMFIGHT", myfont, Brushes.Black, new PointF(59, 24));
@@ -131,6 +136,7 @@ namespace Camfight
             gamebox.Image = picShow;
             gamebox.Refresh();
             gamebox.Show();
+
         }
 
         public void RenderMenu()
@@ -216,13 +222,27 @@ namespace Camfight
             //background 
             g = Graphics.FromImage(picShow);
             g.DrawImage(background, new Rectangle(0, 0, 640, 480));
-            Font myfont = new Font("Arial Rounded MT Bold", 30.0f);
-
+            //Font myfont = new Font("Arial Rounded MT Bold", 30.0f);
+            /*
             g.DrawString("LIFE:" + myplayer.Life.ToString(), myfont, Brushes.Yellow, new PointF(10, 10));
 
 
             //Draw game time
-            g.DrawString("TIME " + playtime.ToString(), myfont, Brushes.Red, new PointF(300, 10));
+            g.DrawString("TIME " + playtime.ToString(), myfont, Brushes.Red, new PointF(300, 10));*/
+            //Draw life bar and game info
+            Font myfont = new Font("Arial Rounded MT Bold", 23.0f);
+            Font name=new Font("Arial",15.0f);
+            
+
+            g.FillPolygon(Brushes.Red, new PointF[4]{p1[0],new PointF(p1[1].X-(100-myplayer.Life)*(280/100),p1[1].Y),new PointF(p1[2].X-(100-myplayer.Life)*(280/100),p1[2].Y),p1[3]});
+            g.DrawPolygon(new Pen(Brushes.Yellow, 3), p1);
+            g.FillPolygon(Brushes.Red, new PointF[4]{new PointF(p2[0].X+(100-enemy.Life)*(280/100),p2[0].Y),p2[1],p2[2],new PointF(p2[3].X+(100-enemy.Life)*(280/100),p2[3].Y)});
+            g.DrawPolygon(new Pen(Brushes.Yellow, 3), p2);
+
+            g.DrawString(playtime.ToString(), myfont, Brushes.Blue, new PointF(286, 10));
+
+            g.DrawString(username, name, Brushes.Blue, new PointF(15, 35));
+            g.DrawString(enemyname, name, Brushes.DeepSkyBlue, new PointF(600, 35));
 
             //player drawing
             if (index == -1)
