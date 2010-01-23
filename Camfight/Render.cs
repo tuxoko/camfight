@@ -160,7 +160,7 @@ namespace Camfight
             Font myfont = new Font("Arial Rounded MT Bold", 60.0f);
             PointF[] myp = new PointF[2] { new PointF(10, 10), new PointF(10, 90) };
             //draw text
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < menus.Length; i++)
             {
                 if (menuIndex == i)
                 {

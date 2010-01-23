@@ -34,7 +34,8 @@ namespace Camfight
             INTERNET=2,
             LOADING=3,
             GAME=4,
-            END=5
+            END=5,
+            SINGLE=6
         };
 
         //player object
@@ -87,7 +88,7 @@ namespace Camfight
         private Mutex enemyStateMutex = new Mutex();
 
         //game menu
-        private string[] menus = new string[2] { "Network", "Quit" };
+        private string[] menus = new string[3] { "Network","Single", "Quit" };
         private int menuIndex = 0;
 
         //game login
@@ -365,7 +366,7 @@ namespace Camfight
                 }
                 else if (e.KeyData == Keys.Down)
                 {
-                    if (menuIndex < 1)
+                    if (menuIndex < menus.Length-1)
                     {
                         menuIndex++;
                     }
@@ -378,6 +379,10 @@ namespace Camfight
                         picShow = new Bitmap(640, 480);
                     }
                     else if (menuIndex == 1)
+                    {
+                        gamestate = GameState.SINGLE;
+                    }
+                    else if (menuIndex == 2)
                     {
                         gamestate = GameState.TITLE;
                         picShow = new Bitmap(640, 480);
