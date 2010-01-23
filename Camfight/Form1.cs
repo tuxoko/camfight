@@ -323,7 +323,7 @@ namespace Camfight
 
         private int big_flash=0;
         private int big_damage = 30;
-        private int big_threshold = 90;
+        private int big_threshold = 30;
 
         public void mymove(packet receiveobj)
         {

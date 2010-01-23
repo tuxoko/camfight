@@ -218,10 +218,11 @@ namespace Camfight
 
                 big_flash--;
             }
-
-            g.FillPolygon(Brushes.Red, new PointF[4] { p1[0], new PointF(p1[1].X - (100 - myplayer.Life) * (float)(2.8), p1[1].Y), new PointF(p1[2].X - (100 - myplayer.Life) * (float)(2.8), p1[2].Y), p1[3] });
+            
+            g.FillPolygon((myplayer.Life<big_threshold)?Brushes.Red:Brushes.Green, new PointF[4] { p1[0], new PointF(p1[1].X - (100 - myplayer.Life) * (float)(2.8), p1[1].Y), new PointF(p1[2].X - (100 - myplayer.Life) * (float)(2.8), p1[2].Y), p1[3] });
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p1);
-            g.FillPolygon(Brushes.Red, new PointF[4] { new PointF(p2[0].X + (100 - enemy.Life) * (float)(2.8), p2[0].Y), p2[1], p2[2], new PointF(p2[3].X + (100 - enemy.Life) * (float)(2.8), p2[3].Y) });
+
+            g.FillPolygon((enemy.Life < big_threshold) ? Brushes.Red : Brushes.Green, new PointF[4] { new PointF(p2[0].X + (100 - enemy.Life) * (float)(2.8), p2[0].Y), p2[1], p2[2], new PointF(p2[3].X + (100 - enemy.Life) * (float)(2.8), p2[3].Y) });
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p2);
 
             g.DrawString(playtime.ToString(), myfont, Brushes.Blue, new PointF(286, 10));
