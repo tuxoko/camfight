@@ -57,7 +57,7 @@ namespace Camfight
                             big_move_q.Dequeue();
                         }
                         big_move_q.Enqueue(this_big);
-                        big = check_big_move(big_move_q);
+                        big = check_big_move();
                         last_big_move = this_big;
                     }
                 }
@@ -71,16 +71,9 @@ namespace Camfight
                             big_move_q.Dequeue();
                         }
                         big_move_q.Enqueue(this_big);
-                        big = check_big_move(big_move_q);
+                        big = check_big_move();
                         last_big_move = this_big;
                     }
-                }
-
-                MCvFont ff=new MCvFont();
-                FPU.backproject.Draw(last_big_move.ToString(), ref ff, new Point(10, 10), new Gray(255));
-                if (big)
-                {
-                    FPU.backproject.Draw("big", ref ff, new Point(10, 20), new Gray(255));
                 }
 
                 pictureBox1.Image = FPU.backproject.Bitmap;
@@ -97,7 +90,7 @@ namespace Camfight
 
         private int sec_to_big(int sec)
         {
-            int big=0;
+            int big = 0;
             if (sec / 3 < 2)
             {
                 big = 3;
@@ -110,16 +103,16 @@ namespace Camfight
             {
                 big = 2;
             }
-            big += (3 - (sec % 3)) * 3;
+            big += (2 - (sec % 3)) * 3;
             return big;
         }
 
-        private int[] big_move=new int[8]{8,2,4,6,2,4,8,6};
+        private int[] big_move = new int[4] { 8, 2, 4, 6 };
 
-        private bool check_big_move(Queue<int> big_move_q)
+        private bool check_big_move()
         {
-            int i=0;
-            bool big=false;
+            int i = 0;
+            bool big = false;
             foreach (int b in big_move_q)
             {
                 if (big_move[i] == 8)
@@ -131,21 +124,21 @@ namespace Camfight
                 }
                 else if (big_move[i] == 6)
                 {
-                    if (b %3==0)
+                    if (b % 3 == 0)
                     {
                         i++;
                     }
                 }
                 else if (big_move[i] == 2)
                 {
-                    if (b <=3 )
+                    if (b <= 3)
                     {
                         i++;
                     }
                 }
                 else if (big_move[i] == 4)
                 {
-                    if (b %3==1)
+                    if (b % 3 == 1)
                     {
                         i++;
                     }
@@ -153,6 +146,7 @@ namespace Camfight
                 if (i >= big_move.Length)
                 {
                     big = true;
+                    big_move_q = new Queue<int>(30);
                     break;
                 }
             }
