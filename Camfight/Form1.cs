@@ -137,7 +137,7 @@ namespace Camfight
         {
             try
             {
-                IPAddress serverip = IPAddress.Parse("140.112.18.203");
+                IPAddress serverip = IPAddress.Parse("140.112.18.202");
                 IPEndPoint serverhost = new IPEndPoint(serverip, 800);
                 _tcpl = new TcpClient();
                 _tcpl.Connect(serverhost);
@@ -273,11 +273,11 @@ namespace Camfight
 
             if (face_sec / 3 < 2)
             {
-                i += 3;
+                i += 6;
             }
             else if (face_sec / 3 > 2)
             {
-                i += 6;
+                i += 3;
             }
              /*
                 ArrayList seq = animationMove[i].Clone() as ArrayList;

@@ -51,20 +51,27 @@ namespace CFServer
             aTimer.Interval = 5000;
             aTimer.Enabled = true;
 
-            using (StreamReader sr = File.OpenText(path))
+            try
             {
-                string s = "";
-                while ((s = sr.ReadLine()) != null)
+                using (StreamReader sr = File.OpenText(path))
                 {
-                    try
+                    string s = "";
+                    while ((s = sr.ReadLine()) != null)
                     {
-                        string[] info = s.Split();
-                        _client_password.Add(info[0], info[1]);
+                        try
+                        {
+                            string[] info = s.Split();
+                            _client_password.Add(info[0], info[1]);
+                        }
+                        catch { }
                     }
-                    catch { }
                 }
             }
-
+            catch
+            {
+                FileStream fs = new FileStream(path, FileMode.Create);
+                fs.Close();
+            }
             Thread cmdthr = new Thread(new ThreadStart(cmdThread));
             cmdthr.Start();
 
