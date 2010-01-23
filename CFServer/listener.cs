@@ -292,7 +292,7 @@ namespace CFServer
             mutTable.ReleaseMutex();
         }
 
-
+        private Random myrand = new Random();
         private void ping(object source, ElapsedEventArgs e)
         {
             mutTable.WaitOne();
@@ -308,7 +308,7 @@ namespace CFServer
                     match.Add(new string[2] { player1, player2 });
 
                     Console.WriteLine("match");
-                    Random myrand = new Random(12345);
+                    
                     packet p1 = new packet("match", player2, (myrand.Next(0, 100) % 2).ToString(), -1, 0, 0, false);
                     packet p2 = new packet("match", player1, (myrand.Next(0, 100) % 2).ToString(), -1, 0, 0, false);
                     sendPacket(player1, p1);

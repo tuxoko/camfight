@@ -261,12 +261,12 @@ namespace Camfight
             if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
             {
                 myplayer.isHit((receiveobj.Sector & 0xF00)>>8);
-                i = 1;
+                i = 2;
             }
             //left
             if((receiveobj.Sector & 0xF00) >> 8 == 0xF) {
                 myplayer.isHit((receiveobj.Sector & 0xF0)>>4);
-                i = 2;
+                i = 1;
             }
 
             int face_sec = receiveobj.Sector & 0xF;
@@ -303,7 +303,7 @@ namespace Camfight
             //right
             if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
             {
-                int sector1 = 14 - ((receiveobj.Sector & 0xF00));
+                int sector1 = 14 - ((receiveobj.Sector & 0xF00)>>8);
                 if (sector1 % 3 == 0) sector1 += 2;
                 else if (sector1 % 3 == 2) sector1 -= 2;
                 enemy.isHit(sector1);
@@ -312,7 +312,7 @@ namespace Camfight
             //left
             if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
             {
-                int sector1 = 14 - ((receiveobj.Sector & 0xF0));
+                int sector1 = 14 - ((receiveobj.Sector & 0xF0)>>4);
                 if (sector1 % 3 == 0) sector1 += 2;
                 else if (sector1 % 3 == 2) sector1 -= 2;
                 enemy.isHit(sector1);
