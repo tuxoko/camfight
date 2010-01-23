@@ -220,7 +220,7 @@ namespace Camfight
 
             g.DrawString("LIFE:" + myplayer.Life.ToString(), myfont, Brushes.Yellow, new PointF(10, 10));
 
-
+            
             //Draw game time
             g.DrawString("TIME " + playtime.ToString(), myfont, Brushes.Red, new PointF(300, 10));
 
