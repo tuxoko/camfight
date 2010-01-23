@@ -58,7 +58,23 @@ namespace Camfight
                     aniMutex.ReleaseMutex();
                 }
             }
-            else if(gamestate==GameState.END)
+            else if (gamestate == GameState.SINGLE)
+            {
+                playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
+
+                if (playtime == 0)
+                {
+                    fpu_thr.Abort();
+                    single_reset();
+                }
+                else
+                {
+                    aniMutex.WaitOne();
+                    Render(playstate);
+                    aniMutex.ReleaseMutex();
+                }
+            }
+            else if (gamestate == GameState.END)
             {
                 RenderGameOver();
             }
@@ -95,7 +111,7 @@ namespace Camfight
             g.DrawImage(background, new Rectangle(0, 0, 640, 480));
 
             Font myfont = new Font("Arial Rounded MT Bold", 60.0f);
-            PointF[] myp = new PointF[2] { new PointF(10, 10), new PointF(10, 90) };
+            PointF[] myp = new PointF[3] { new PointF(10, 10), new PointF(10, 90) , new PointF(10,170)};
             //draw text
             for (int i = 0; i < menus.Length; i++)
             {
@@ -181,7 +197,27 @@ namespace Camfight
             //Draw life bar and game info
             Font myfont = new Font("Arial Rounded MT Bold", 23.0f);
             Font name=new Font("Arial Bold",15.0f);
+            
+            //player drawing
+            if (index == -1)
+            {
+                enemy.draw(g, 0);
+            }
+            else
+            {
+                enemy.draw(g, index);
+            }
 
+            //flash big move
+            if (big_flash > 0)
+            {
+                if (big_flash % 6 < 3)
+                {
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(175, Color.Black)), 0, 0, 640, 480);
+                }
+
+                big_flash--;
+            }
 
             g.FillPolygon(Brushes.Red, new PointF[4] { p1[0], new PointF(p1[1].X - (100 - myplayer.Life) * (float)(2.8), p1[1].Y), new PointF(p1[2].X - (100 - myplayer.Life) * (float)(2.8), p1[2].Y), p1[3] });
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p1);
@@ -195,28 +231,22 @@ namespace Camfight
 
             g.DrawString(enemyname, name, Brushes.Black, new PointF(522, 37));
             g.DrawString(enemyname, name, Brushes.DeepSkyBlue, new PointF(520, 35));
+            
 
-            //player drawing
-            if (index == -1)
-            {
-                enemy.draw(g, 0);
-            }
-            else
-            {
-                enemy.draw(g, index);
-            }
-
-            if (FPU.have_left_punch)
-                g.DrawImage(Resources.Bang, 640 - FPU.center[1].X - 95, FPU.center[1].Y - 95,300,260);
-            if (FPU.have_right_punch)
-                g.DrawImage(Resources.Bang, 640 - FPU.center[0].X - 95, FPU.center[0].Y - 95, 300, 260);
+            
+            fpu_mutex.WaitOne();
+            if (fpu_container.have_left_punch)
+                g.DrawImage(Resources.Bang, 640 - fpu_container.center[1].X - 95, fpu_container.center[1].Y - 95,300,260);
+            if (fpu_container.have_right_punch)
+                g.DrawImage(Resources.Bang, 640 - fpu_container.center[0].X - 95, fpu_container.center[0].Y - 95, 300, 260);
             //Draw left hand
-            if(FPU.have_left)
-            myplayer.drawLeft(g,640-FPU.center[1].X-80,FPU.center[1].Y-80);
+            if(fpu_container.have_left)
+            myplayer.drawLeft(g,640-fpu_container.center[1].X-80,fpu_container.center[1].Y-80);
             //Draw right hand
-            if(FPU.have_right)
-            myplayer.drawRight(g, 640 - FPU.center[0].X-80, FPU.center[0].Y-80);
+            if(fpu_container.have_right)
+            myplayer.drawRight(g, 640 - fpu_container.center[0].X-80, fpu_container.center[0].Y-80);
             //Draw head
+            fpu_mutex.ReleaseMutex();
             myplayer.drawHead(g);
 
             gamebox.Image = picShow;

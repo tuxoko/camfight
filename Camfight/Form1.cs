@@ -240,6 +240,7 @@ namespace Camfight
         private Thread fpu_thr;
         private void GameStart(packet receiveobj)
         {
+            big_flash = 0;
             enemyname = receiveobj.Name;
             LoadingEnemyContent(receiveobj.Msg);
             gamestate = GameState.GAME;
@@ -271,18 +272,27 @@ namespace Camfight
             enemy.update(receiveobj.Sector & 0xF);
             int i = 0;
 
-            //right
-            if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
+            if (receiveobj.Big && (enemy.Big_used==false) && enemy.Life<big_threshold)
             {
-                myplayer.isHit((receiveobj.Sector & 0xF00)>>8);
-                i = 2;
+                big_flash = 40;
+                myplayer.getHurt(big_damage);
+                enemy.Big_used = true;
             }
-            //left
-            if((receiveobj.Sector & 0xF00) >> 8 == 0xF) {
-                myplayer.isHit((receiveobj.Sector & 0xF0)>>4);
-                i = 1;
+            else
+            {
+                //right
+                if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
+                {
+                    myplayer.isHit((receiveobj.Sector & 0xF00) >> 8);
+                    i = 2;
+                }
+                //left
+                if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
+                {
+                    myplayer.isHit((receiveobj.Sector & 0xF0) >> 4);
+                    i = 1;
+                }
             }
-
             int face_sec = receiveobj.Sector & 0xF;
 
             if (face_sec / 3 < 2)
@@ -300,16 +310,20 @@ namespace Camfight
                 aniMutex.ReleaseMutex();
             */
             
-            if (enemy.IsAlive == false)//win this game
+            if (myplayer.IsAlive == false)//win this game
             {
                // this.Invoke(new InvokeFunction(this.quit), new object[] { });
-                this.Invoke(new InvokeFunction3(this.GameOver), new object[] {"w" });
+                this.Invoke(new InvokeFunction3(this.GameOver), new object[] {"l" });
             }
 
             aniMutex.WaitOne();
             playstate = i;
             aniMutex.ReleaseMutex();
         }
+
+        private int big_flash=0;
+        private int big_damage = 30;
+        private int big_threshold = 90;
 
         public void mymove(packet receiveobj)
         {
@@ -321,29 +335,37 @@ namespace Camfight
 
             int i = 0;
 
-            //right
-            if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
+            if (receiveobj.Big && (myplayer.Big_used==false) && myplayer.Life<big_threshold)
             {
-                int sector1 = 14 - ((receiveobj.Sector & 0xF00)>>8);
-                if (sector1 % 3 == 0) sector1 += 2;
-                else if (sector1 % 3 == 2) sector1 -= 2;
-                enemy.isHit(sector1);
-                i = 2;
+                big_flash = 40;
+                enemy.getHurt(big_damage);
+                myplayer.Big_used = true;
             }
-            //left
-            if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
+            else
             {
-                int sector1 = 14 - ((receiveobj.Sector & 0xF0)>>4);
-                if (sector1 % 3 == 0) sector1 += 2;
-                else if (sector1 % 3 == 2) sector1 -= 2;
-                enemy.isHit(sector1);
-                i = 1;
+                //right
+                if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
+                {
+                    int sector1 = 14 - ((receiveobj.Sector & 0xF00) >> 8);
+                    if (sector1 % 3 == 0) sector1 += 2;
+                    else if (sector1 % 3 == 2) sector1 -= 2;
+                    enemy.isHit(sector1);
+                    i = 2;
+                }
+                //left
+                if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
+                {
+                    int sector1 = 14 - ((receiveobj.Sector & 0xF0) >> 4);
+                    if (sector1 % 3 == 0) sector1 += 2;
+                    else if (sector1 % 3 == 2) sector1 -= 2;
+                    enemy.isHit(sector1);
+                    i = 1;
+                }
             }
-            
-            if (myplayer.IsAlive == false)//win this game
+            if (enemy.IsAlive == false)//win this game
             {
             //    this.Invoke(new InvokeFunction(this.quit), new object[] { });
-                this.Invoke(new InvokeFunction3(this.GameOver), new object[] { "l" });
+                this.Invoke(new InvokeFunction3(this.GameOver), new object[] { "w" });
             }
         }
 
@@ -383,6 +405,7 @@ namespace Camfight
                     }
                     else if (menuIndex == 1)
                     {
+                        single_reset();
                         gamestate = GameState.SINGLE;
                     }
                     else if (menuIndex == 2)
@@ -413,6 +436,24 @@ namespace Camfight
                     }
                 }
             }
+        }
+
+        private void single_reset()
+        {
+            enemyname = "Bot";
+            Random rd = new Random();
+            LoadingEnemyContent((rd.Next() % 2).ToString());
+
+            //Application.Idle += new EventHandler(ProcessFrame);
+            fpu_thr = new Thread(new ThreadStart(ProcessFrame));
+            fpu_thr.Start();
+            sw.Reset();
+            sw.Start();
+
+            big_flash = 0;
+
+            username = "Practice";
+            myplayer = new Player("player2", Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
         }
 
         private void LoginInputControl(KeyEventArgs e)

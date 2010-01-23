@@ -24,13 +24,19 @@ namespace Camfight
         private Queue<int> big_move_q=new Queue<int>(30);
         private int last_big_move;
 
+        private Mutex fpu_mutex = new Mutex();
+        private FPUContainer fpu_container = new FPUContainer();
         private void ProcessFrame()
         {
             while (true)
             {
                 Image<Bgr, Byte> frame = _capture.QueryFrame();
                 FPU.ProcessFrame(frame);
-                
+
+                fpu_mutex.WaitOne();
+                fpu_container.SetVar(FPU);
+                fpu_mutex.ReleaseMutex();
+
                 int face_sector = GetSector(new Point(FPU.face.X + FPU.face.Width / 2, FPU.face.Y + FPU.face.Height / 2),frame.Size);
                 int left_sector = GetSector(FPU.center[1],frame.Size);
                 int right_sector = GetSector(FPU.center[0],frame.Size);
@@ -83,7 +89,15 @@ namespace Camfight
                 //pictureBox1.Show();
 
                 packet pac = new packet("play", enemyname, "", 0, 0, sector, big);
-                SendPacket(pac);
+
+                if (gamestate == GameState.GAME)
+                {
+                    SendPacket(pac);
+                }
+                else if (gamestate == GameState.SINGLE)
+                {
+                    this.Invoke(new InvokeFunction2(this.mymove), pac);
+                }
                 
             }
         }

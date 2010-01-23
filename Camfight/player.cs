@@ -34,6 +34,9 @@ namespace Camfight
         }
         private string type;
 
+        public bool Big_used;
+
+
         public int x=320-170;
         public int y=240-170;
         public Player(string type,Image img, Image img_lh, Image img_rh,Image img_left, Image img_left_lh, Image img_left_rh,Image img_right, Image img_right_lh,Image img_right_rh,Image im_idle_1,Image im_idle_2,Image im_idle_3)
@@ -43,6 +46,7 @@ namespace Camfight
             isalive = true;
             state = 0;
             this.type = type;
+            Big_used = false;
         }
         public void draw(Graphics g,int state) 
         {

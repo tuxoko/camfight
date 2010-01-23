@@ -14,7 +14,25 @@ using Emgu.Util;
 using System.Threading;
 using Emgu.CV.CvEnum;
 
+public class FPUContainer
+{
+    public Point[] center;
+    public bool have_face;
+    public bool have_left;
+    public bool have_right;
+    public bool have_left_punch;
+    public bool have_right_punch;
 
+    public void SetVar(FrameProcessor FPU)
+    {
+        this.center=FPU.center.Clone() as Point[];
+        this.have_face=FPU.have_face;
+        this.have_left=FPU.have_left;
+        this.have_left_punch=FPU.have_left_punch;
+        this.have_right=FPU.have_right;
+        this.have_right_punch=FPU.have_right_punch;
+    }
+}
 
 public class FrameProcessor
 {
