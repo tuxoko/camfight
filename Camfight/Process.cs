@@ -121,6 +121,7 @@ namespace Camfight
                 if (i >= 8)
                 {
                     big = true;
+                    break;
                 }
             }
             return big;

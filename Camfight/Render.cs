@@ -253,6 +253,15 @@ namespace Camfight
             {
                 enemy.draw(g, index);
             }
+            //Draw left hand
+            if(FPU.have_left)
+            myplayer.drawLeft(g,640-FPU.center[1].X-80,FPU.center[1].Y-80);
+            //Draw right hand
+            if(FPU.have_right)
+            myplayer.drawRight(g, 640 - FPU.center[0].X-80, FPU.center[0].Y-80);
+            //Draw head
+            myplayer.drawHead(g);
+
             gamebox.Image = picShow;
             gamebox.Refresh();
             gamebox.Show();

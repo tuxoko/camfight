@@ -60,6 +60,48 @@ namespace Camfight.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap BGL {
+            get {
+                object obj = ResourceManager.GetObject("BGL", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap BGR {
+            get {
+                object obj = ResourceManager.GetObject("BGR", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap H1 {
+            get {
+                object obj = ResourceManager.GetObject("H1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap H2 {
+            get {
+                object obj = ResourceManager.GetObject("H2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap H3 {
+            get {
+                object obj = ResourceManager.GetObject("H3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap H4 {
+            get {
+                object obj = ResourceManager.GetObject("H4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap player1 {
             get {
                 object obj = ResourceManager.GetObject("player1", resourceCulture);
