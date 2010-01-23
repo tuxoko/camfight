@@ -51,20 +51,27 @@ namespace CFServer
             aTimer.Interval = 5000;
             aTimer.Enabled = true;
 
-            using (StreamReader sr = File.OpenText(path))
+            try
             {
-                string s = "";
-                while ((s = sr.ReadLine()) != null)
+                using (StreamReader sr = File.OpenText(path))
                 {
-                    try
+                    string s = "";
+                    while ((s = sr.ReadLine()) != null)
                     {
-                        string[] info = s.Split();
-                        _client_password.Add(info[0], info[1]);
+                        try
+                        {
+                            string[] info = s.Split();
+                            _client_password.Add(info[0], info[1]);
+                        }
+                        catch { }
                     }
-                    catch { }
                 }
             }
-
+            catch
+            {
+                FileStream fs = new FileStream(path, FileMode.Create);
+                fs.Close();
+            }
             Thread cmdthr = new Thread(new ThreadStart(cmdThread));
             cmdthr.Start();
 
@@ -285,7 +292,7 @@ namespace CFServer
             mutTable.ReleaseMutex();
         }
 
-
+        private Random myrand = new Random();
         private void ping(object source, ElapsedEventArgs e)
         {
             mutTable.WaitOne();
@@ -301,7 +308,7 @@ namespace CFServer
                     match.Add(new string[2] { player1, player2 });
 
                     Console.WriteLine("match");
-                    Random myrand = new Random(12345);
+                    
                     packet p1 = new packet("match", player2, (myrand.Next(0, 100) % 2).ToString(), -1, 0, 0, false);
                     packet p2 = new packet("match", player1, (myrand.Next(0, 100) % 2).ToString(), -1, 0, 0, false);
                     sendPacket(player1, p1);
