@@ -49,6 +49,21 @@ namespace Camfight
             g.DrawImage(player[state],new Rectangle(x,y,340,340));
         }
 
+        public void drawLeft(Graphics g, int px, int py)
+        {
+            g.DrawImage(player[10], new Rectangle(px, py, 160, 160));
+        }
+
+        public void drawRight(Graphics g, int px, int py)
+        {
+            g.DrawImage(player[11], new Rectangle(px, py, 160, 160));
+        }
+
+        public void drawHead(Graphics g)
+        {
+            g.DrawImage(player[9], new Rectangle(x+170-100, 380, 200, 100));
+        }
+
         public void update(int sector)
         {
             int v=10;

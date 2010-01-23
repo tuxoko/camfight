@@ -239,14 +239,14 @@ namespace Camfight
         private void LoadingEnemyContent(string type)
         {
             //if(type=="0")
-                enemy = new Player("player1",Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh,Resources.player1_2,Resources.player1_1,Resources.player1_3);
+                enemy = new Player("player1",Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh,Resources.H1,Resources.BGL,Resources.BGR);
             //else if(type=="1")
               //  enemy = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh,null,null,null);
         }
         private void LoadingContent()
         {   
             background = Resources.SPback;
-            myplayer = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh,null,null,null);
+            myplayer = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh,Resources.H1,Resources.BGL,Resources.BGR);
             //enemy = new Player("player1", Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh);
         }
 
@@ -303,13 +303,19 @@ namespace Camfight
             //right
             if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
             {
-                enemy.isHit((receiveobj.Sector & 0xF00) >> 8);
+                int sector1 = 14 - ((receiveobj.Sector & 0xF00));
+                if (sector1 % 3 == 0) sector1 += 2;
+                else if (sector1 % 3 == 2) sector1 -= 2;
+                enemy.isHit(sector1);
                 i = 2;
             }
             //left
             if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
             {
-                enemy.isHit((receiveobj.Sector & 0xF0) >> 4);
+                int sector1 = 14 - ((receiveobj.Sector & 0xF0));
+                if (sector1 % 3 == 0) sector1 += 2;
+                else if (sector1 % 3 == 2) sector1 -= 2;
+                enemy.isHit(sector1);
                 i = 1;
             }
         }

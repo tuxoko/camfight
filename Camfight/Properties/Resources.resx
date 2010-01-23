@@ -187,4 +187,22 @@
   <data name="player1_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\player1_3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="BGL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BGL.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BGR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BGR.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="H1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\H1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="H2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\H2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="H3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\H3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="H4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\H4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
