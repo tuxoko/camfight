@@ -308,9 +308,10 @@ namespace CFServer
                     match.Add(new string[2] { player1, player2 });
 
                     Console.WriteLine("match");
-                    
-                    packet p1 = new packet("match", player2, (myrand.Next(0, 100) % 2).ToString(), -1, 0, 0, false);
-                    packet p2 = new packet("match", player1, (myrand.Next(0, 100) % 2).ToString(), -1, 0, 0, false);
+                    int p1type=myrand.Next(0, 100) % 2;
+                    int p2type=myrand.Next(0, 100) % 2;
+                    packet p1 = new packet("match", player2, "", p1type, p2type, 0, false);
+                    packet p2 = new packet("match", player1, "", p2type, p1type, 0, false);
                     sendPacket(player1, p1);
                     sendPacket(player2, p2);
                 }

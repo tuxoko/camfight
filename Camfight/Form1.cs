@@ -46,7 +46,7 @@ namespace Camfight
 
         //use for rendering
         private Graphics g = null;
-        private Image background = null;
+        private Image background = Resources.SPback;
         private Image picShow = new Bitmap(640,480);
         System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
         private Queue<Animation> myAnimation = new Queue<Animation>();
@@ -114,7 +114,6 @@ namespace Camfight
         {
             InitializeComponent();
             SetAnimation();
-            LoadingContent();
             //ConnectToServer();        
             //gamestate = GameState.GAME;
             myTimer.Tick += new EventHandler(GameDraw);
@@ -242,7 +241,8 @@ namespace Camfight
         {
             big_flash = 0;
             enemyname = receiveobj.Name;
-            LoadingEnemyContent(receiveobj.Msg);
+            LoadingEnemyContent(receiveobj);
+            LoadingContent(receiveobj);
             gamestate = GameState.GAME;
             //Application.Idle += new EventHandler(ProcessFrame);
             fpu_thr = new Thread(new ThreadStart(ProcessFrame));
@@ -251,21 +251,48 @@ namespace Camfight
             sw.Start();
         }
 
-        private void LoadingEnemyContent(string type)
+        private void LoadingEnemyContent(packet pac)
         {
-            //if(type=="0")
-                enemy = new Player("player1",Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh,Resources.H1,Resources.BGL,Resources.BGR);
-            //else if(type=="1")
-              //  enemy = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh,null,null,null);
+            switch (pac.Time)
+            {
+                case 0:
+                    enemy = new Player("player1", Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                case 1:
+                    enemy = new Player("player1", Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                case 2:
+                    //enemy = new Player("player1", Resources.player3, Resources.player3_lh, Resources.player3_rh, Resources.player3_left, Resources.player3_left_lh, Resources.player3_left_rh, Resources.player3_right, Resources.player3_right_lh, Resources.player3_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                case 3:
+                    //enemy = new Player("player1", Resources.player4, Resources.player4_lh, Resources.player4_rh, Resources.player4_left, Resources.player4_left_lh, Resources.player4_left_rh, Resources.player4_right, Resources.player4_right_lh, Resources.player4_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                default:
+                    enemy = new Player("player1", Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+            }
         }
-        private void LoadingContent()
-        {   
-            background = Resources.SPback;
-            myplayer = new Player("player2",Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh,Resources.H1,Resources.BGL,Resources.BGR);
-            //enemy = new Player("player1", Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh);
-        }
-
-       
+        private void LoadingContent(packet pac)
+        {
+            switch (pac.Move)
+            {
+                case 0:
+                    myplayer = new Player("player2", Resources.player1, Resources.player1_lh, Resources.player1_rh, Resources.player1_left, Resources.player1_left_lh, Resources.player1_left_rh, Resources.player1_right, Resources.player1_right_lh, Resources.player1_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                case 1:
+                    myplayer = new Player("player2", Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                case 2:
+                    //myplayer = new Player("player2", Resources.player3, Resources.player3_lh, Resources.player3_rh, Resources.player3_left, Resources.player3_left_lh, Resources.player3_left_rh, Resources.player3_right, Resources.player3_right_lh, Resources.player3_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                case 3:
+                    //myplayer = new Player("player2", Resources.player4, Resources.player4_lh, Resources.player4_rh, Resources.player4_left, Resources.player4_left_lh, Resources.player4_left_rh, Resources.player4_right, Resources.player4_right_lh, Resources.player4_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+                default:
+                    myplayer = new Player("player2", Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+                    break;
+            }
+        }    
 
         public void EnemyMove(packet receiveobj)
         {
@@ -442,8 +469,7 @@ namespace Camfight
         {
             enemyname = "Bot";
             Random rd = new Random();
-            LoadingEnemyContent((rd.Next() % 2).ToString());
-
+            LoadingEnemyContent(new packet("", "", "", 0, (rd.Next() % 2), 0, false));
             //Application.Idle += new EventHandler(ProcessFrame);
             fpu_thr = new Thread(new ThreadStart(ProcessFrame));
             fpu_thr.Start();
@@ -453,7 +479,7 @@ namespace Camfight
             big_flash = 0;
 
             username = "Practice";
-            myplayer = new Player("player2", Resources.player2, Resources.player2_lh, Resources.player2_rh, Resources.player2_left, Resources.player2_left_lh, Resources.player2_left_rh, Resources.player2_right, Resources.player2_right_lh, Resources.player2_right_rh, Resources.H1, Resources.BGL, Resources.BGR);
+            LoadingContent(new packet("", "", "", (rd.Next() % 2), 0, 0, false));
         }
 
         private void LoginInputControl(KeyEventArgs e)
