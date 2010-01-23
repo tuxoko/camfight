@@ -65,88 +65,92 @@ public class FrameProcessor
 
     public void ProcessFrame(Image<Bgr, Byte> frame)
     {
-        sw.Reset();
-        sw.Start();
-        MCvAvgComp[] faces = FaceDetect(frame);
-        sw.Stop();
-        t_facedetect = sw.ElapsedMilliseconds;
-
-        sw.Reset();
-        sw.Start();
-        Image<Hsv, Byte> hsv = frame.Convert<Hsv, Byte>();
-        Image<Gray, Byte> hue = new Image<Gray, byte>(frame.Width, frame.Height);
-        Image<Gray, Byte> mask = new Image<Gray, byte>(frame.Width, frame.Height);
-        Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 30, 0), new MCvScalar(180, 256, 256, 0), mask);
-        Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-
-        if (isTracked == false)
+        try
         {
+            sw.Reset();
+            sw.Start();
+            MCvAvgComp[] faces = FaceDetect(frame);
+            sw.Stop();
+            t_facedetect = sw.ElapsedMilliseconds;
+
+            sw.Reset();
+            sw.Start();
+            Image<Hsv, Byte> hsv = frame.Convert<Hsv, Byte>();
+            Image<Gray, Byte> hue = new Image<Gray, byte>(frame.Width, frame.Height);
+            Image<Gray, Byte> mask = new Image<Gray, byte>(frame.Width, frame.Height);
+            Emgu.CV.CvInvoke.cvInRangeS(hsv, new MCvScalar(0, 30, 30, 0), new MCvScalar(180, 256, 256, 0), mask);
+            Emgu.CV.CvInvoke.cvSplit(hsv, hue, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+
+            if (isTracked == false)
+            {
+                if (faces.Length != 0)
+                {
+                    var ff = faces[0];
+                    Rectangle smallFaceROI = new Rectangle(ff.rect.X + ff.rect.Width / 8, ff.rect.Y + ff.rect.Height / 8, ff.rect.Width / 4, ff.rect.Height / 4);
+                    _hist = GetHist(hue, smallFaceROI, mask);
+                    isTracked = true;
+                    th_check = true;
+                    center = new Point[] { new Point(0, 0), new Point(0, 0) };
+                }
+                else
+                {
+                    have_face = false;
+                    have_left = false;
+                    have_right = false;
+                    return;
+                }
+            }
+            sw.Stop();
+            t_hue = sw.ElapsedMilliseconds;
+
+
             if (faces.Length != 0)
             {
-                var ff = faces[0];
-                Rectangle smallFaceROI = new Rectangle(ff.rect.X + ff.rect.Width / 8, ff.rect.Y + ff.rect.Height / 8, ff.rect.Width / 4, ff.rect.Height / 4);
-                _hist = GetHist(hue, smallFaceROI, mask);
-                isTracked=true;
-                th_check = true;
-                center = new Point[] { new Point(0, 0), new Point(0, 0) };
+                face_rect = faces[0].rect;
+                face = face_rect;
+                have_face = true;
             }
             else
             {
-                have_face=false;
-                have_left=false;
-                have_right=false;
-                return;
+                face = face_rect;
+                have_face = false;
             }
+
+            sw.Reset();
+            sw.Start();
+            backproject = GetBackproject(hue, _hist, mask, face_rect).ThresholdToZero(new Gray(backproj_threshold));
+            sw.Stop();
+            t_backproject = sw.ElapsedMilliseconds;
+
+            sw.Reset();
+            sw.Start();
+
+            if (isTracked)
+            {
+                center = kmeans(center, backproject, face_rect, kmeans_scale);
+                center = refine_center(center, backproject);
+            }
+            sw.Stop();
+            t_kmeans = sw.ElapsedMilliseconds;
+
+
+            sw.Reset();
+            sw.Start();
+            right = new Rectangle(center[0].X - hand_size / 2, center[0].Y - hand_size / 2, hand_size, hand_size);
+            left = new Rectangle(center[1].X - hand_size / 2, center[1].Y - hand_size / 2, hand_size, hand_size);
+            backproject.ROI = left;
+            left_mom = backproject.GetMoments(false);
+            backproject.ROI = right;
+            right_mom = backproject.GetMoments(false);
+            Emgu.CV.CvInvoke.cvResetImageROI(backproject);
+
+            sw.Stop();
+            t_hand = sw.ElapsedMilliseconds;
+
+
+            ProcessInput();
         }
-        sw.Stop();
-        t_hue = sw.ElapsedMilliseconds;
-
-
-        if (faces.Length != 0)
-        {
-            face_rect = faces[0].rect;
-            face = face_rect;
-            have_face = true;
-        }
-        else
-        {
-            face = face_rect;
-            have_face = false;
-        }
-
-        sw.Reset();
-        sw.Start();
-        backproject = GetBackproject(hue, _hist, mask, face_rect).ThresholdToZero(new Gray(backproj_threshold));
-        sw.Stop();
-        t_backproject = sw.ElapsedMilliseconds;
-
-        sw.Reset();
-        sw.Start();
-        
-        if (isTracked)
-        {
-            center = kmeans(center, backproject, face_rect, kmeans_scale);
-            center = refine_center(center, backproject);
-        }
-        sw.Stop();
-        t_kmeans = sw.ElapsedMilliseconds;
-
-
-        sw.Reset();
-        sw.Start();
-        right = new Rectangle(center[0].X - hand_size / 2, center[0].Y - hand_size / 2, hand_size, hand_size);
-        left = new Rectangle(center[1].X - hand_size / 2, center[1].Y - hand_size / 2, hand_size, hand_size);
-        backproject.ROI = left;
-        left_mom=backproject.GetMoments(false);
-        backproject.ROI = right;
-        right_mom = backproject.GetMoments(false);
-        Emgu.CV.CvInvoke.cvResetImageROI(backproject);
-        
-        sw.Stop();
-        t_hand = sw.ElapsedMilliseconds;
-
-
-        ProcessInput();
+        catch { }
     }
 
     private int left_state = 0;

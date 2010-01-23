@@ -42,90 +42,27 @@ namespace Camfight
             }
             else if (gamestate == GameState.GAME)
             {
-                /*if (++count >= 40)
-                {
-                    count -= 40;
-                    playtime--;
-                }*/
 
                 playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
-                /*
-                if (playAnimation == false)//no animation playing now
-                {
-                    if (myAnimation.Count != 0)
-                    {
-                        aniMutex.WaitOne();
-                        nowplay = myAnimation.Dequeue() as Animation;
-                        aniMutex.ReleaseMutex();
-                        playindex = 0;
-                        playMutex.WaitOne();
-                        playAnimation = true;
-                        playIdle = false;
-                        playMutex.ReleaseMutex();
-                    }
-                    else
-                    {
-                        aniMutex.WaitOne();
-                        nowplay = new Animation("player1", animationMove[0].Clone() as ArrayList);
-                        aniMutex.ReleaseMutex();
-                        playMutex.WaitOne();
-                        playindex = 0;
-                        playAnimation = true;
-                        playIdle = true;
-                        playMutex.ReleaseMutex();
-                    }
-                }
-                if (playIdle == true)
-                {
-                    if (myAnimation.Count != 0)
-                    {
-                        aniMutex.WaitOne();
-                        nowplay = myAnimation.Dequeue() as Animation;
-                        aniMutex.ReleaseMutex();
-                        playindex = 0;
-                        playMutex.WaitOne();
-                        playAnimation = true;
-                        playIdle = false;
-                        playMutex.ReleaseMutex();
-                    }
-                }
-                
-                if (playAnimation == true)
-                {
-                    if (playindex < nowplay.PlaySeq.Count && ++anicount >= 4)
-                    {
-                        Render((int)nowplay.PlaySeq[playindex++]);
-                        anicount -= 4;
-                    }
-                    else
-                    {
-                        Render((int)nowplay.PlaySeq[playindex]);
-                    }
-                    if (playindex == nowplay.PlaySeq.Count)
-                    {
-                        playMutex.WaitOne();
-                        playAnimation = false;
-                        playMutex.ReleaseMutex();
-                    }
-                }*/
 
-                aniMutex.WaitOne();
-                Render(playstate);
-                aniMutex.ReleaseMutex();
+                if (playtime == 0)
+                {
+                    if (enemy.Life > myplayer.Life) GameOver("l");
+                    else if (enemy.Life < myplayer.Life) GameOver("w");
+                    else GameOver("t");
+                }
+                else
+                {
+                    aniMutex.WaitOne();
+                    Render(playstate);
+                    aniMutex.ReleaseMutex();
+                }
             }
-            else
+            else if(gamestate==GameState.END)
             {
                 RenderGameOver();
             }
-            if (playtime == 0)
-            {
-                myTimer.Stop();
-                /*
-                quit();
-                if (enemy.Life > myplayer.Life) GameOver("l");
-                else if (enemy.Life < myplayer.Life) GameOver("w");
-                else GameOver("t");*/
-            }
+            
         }
 
 
@@ -244,11 +181,11 @@ namespace Camfight
             //Draw life bar and game info
             Font myfont = new Font("Arial Rounded MT Bold", 23.0f);
             Font name=new Font("Arial Bold",15.0f);
-            
 
-            g.FillPolygon(Brushes.Red, new PointF[4]{p1[0],new PointF(p1[1].X-(100-myplayer.Life)*(280/100),p1[1].Y),new PointF(p1[2].X-(100-myplayer.Life)*(280/100),p1[2].Y),p1[3]});
+
+            g.FillPolygon(Brushes.Red, new PointF[4] { p1[0], new PointF(p1[1].X - (100 - myplayer.Life) * (float)(2.8), p1[1].Y), new PointF(p1[2].X - (100 - myplayer.Life) * (float)(2.8), p1[2].Y), p1[3] });
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p1);
-            g.FillPolygon(Brushes.Red, new PointF[4]{new PointF(p2[0].X+(100-enemy.Life)*(280/100),p2[0].Y),p2[1],p2[2],new PointF(p2[3].X+(100-enemy.Life)*(280/100),p2[3].Y)});
+            g.FillPolygon(Brushes.Red, new PointF[4] { new PointF(p2[0].X + (100 - enemy.Life) * (float)(2.8), p2[0].Y), p2[1], p2[2], new PointF(p2[3].X + (100 - enemy.Life) * (float)(2.8), p2[3].Y) });
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p2);
 
             g.DrawString(playtime.ToString(), myfont, Brushes.Blue, new PointF(286, 10));
@@ -304,6 +241,10 @@ namespace Camfight
                 g.DrawString("Play Again", myfont, Brushes.Black, new PointF(150, 200));
                 g.DrawString("Quit", myfont, Brushes.Red, new PointF(150, 300));
             }
+
+            gamebox.Image = picShow;
+            gamebox.Refresh();
+            gamebox.Show();
         }
     }
 }
