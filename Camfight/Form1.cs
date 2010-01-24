@@ -240,6 +240,7 @@ namespace Camfight
         private void GameStart(packet receiveobj)
         {
             big_flash = 0;
+            hit_flash = 0;
             enemyname = receiveobj.Name;
             LoadingEnemyContent(receiveobj);
             LoadingContent(receiveobj);
@@ -310,13 +311,13 @@ namespace Camfight
                 //right
                 if ((receiveobj.Sector & 0xF0) >> 4 == 0xF)
                 {
-                    myplayer.isHit((receiveobj.Sector & 0xF00) >> 8);
+                    ishit=myplayer.isHit((receiveobj.Sector & 0xF00) >> 8);
                     i = 2;
                 }
                 //left
                 if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
                 {
-                    myplayer.isHit((receiveobj.Sector & 0xF0) >> 4);
+                    ishit=myplayer.isHit((receiveobj.Sector & 0xF0) >> 4);
                     i = 1;
                 }
             }
@@ -336,6 +337,12 @@ namespace Camfight
                 myAnimation.Enqueue(new Animation("player1", seq));
                 aniMutex.ReleaseMutex();
             */
+
+            if (ishit == true)
+            {
+                hit_flash = 18;
+                ishit = false;
+            }
             
             if (myplayer.IsAlive == false)//win this game
             {
@@ -348,9 +355,13 @@ namespace Camfight
             aniMutex.ReleaseMutex();
         }
 
+        //for big
         private int big_flash=0;
         private int big_damage = 30;
         private int big_threshold = 30;
+        //for hit
+        private int hit_flash = 0;
+        private bool ishit = false;
 
         public void mymove(packet receiveobj)
         {
@@ -389,6 +400,9 @@ namespace Camfight
                     i = 1;
                 }
             }
+
+            
+
             if (enemy.IsAlive == false)//win this game
             {
             //    this.Invoke(new InvokeFunction(this.quit), new object[] { });
@@ -477,6 +491,7 @@ namespace Camfight
             sw.Start();
 
             big_flash = 0;
+            hit_flash = 0;
 
             username = "Practice";
             LoadingContent(new packet("", "", "", (rd.Next() % 2), 0, 0, false));

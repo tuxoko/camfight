@@ -218,11 +218,20 @@ namespace Camfight
 
                 big_flash--;
             }
+            else if (hit_flash>0)
+            {
+                if (hit_flash % 6 < 3)
+                {
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(175, Color.Red)), 0, 0, 640, 480);
+                }
+
+                hit_flash--;
+            }
             
-            g.FillPolygon((myplayer.Life<big_threshold)?Brushes.Red:Brushes.Green, new PointF[4] { p1[0], new PointF(p1[1].X - (100 - myplayer.Life) * (float)(2.8), p1[1].Y), new PointF(p1[2].X - (100 - myplayer.Life) * (float)(2.8), p1[2].Y), p1[3] });
+            g.FillPolygon((myplayer.Life<big_threshold)?Brushes.Red:Brushes.LimeGreen, new PointF[4] { p1[0], new PointF(p1[1].X - (100 - myplayer.Life) * (float)(2.8), p1[1].Y), new PointF(p1[2].X - (100 - myplayer.Life) * (float)(2.8), p1[2].Y), p1[3] });
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p1);
 
-            g.FillPolygon((enemy.Life < big_threshold) ? Brushes.Red : Brushes.Green, new PointF[4] { new PointF(p2[0].X + (100 - enemy.Life) * (float)(2.8), p2[0].Y), p2[1], p2[2], new PointF(p2[3].X + (100 - enemy.Life) * (float)(2.8), p2[3].Y) });
+            g.FillPolygon((enemy.Life < big_threshold) ? Brushes.Red : Brushes.LimeGreen, new PointF[4] { new PointF(p2[0].X + (100 - enemy.Life) * (float)(2.8), p2[0].Y), p2[1], p2[2], new PointF(p2[3].X + (100 - enemy.Life) * (float)(2.8), p2[3].Y) });
             g.DrawPolygon(new Pen(Brushes.Yellow, 3), p2);
 
             g.DrawString(playtime.ToString(), myfont, Brushes.Blue, new PointF(286, 10));
@@ -237,9 +246,9 @@ namespace Camfight
             
             fpu_mutex.WaitOne();
             if (fpu_container.have_left_punch)
-                g.DrawImage(Resources.Bang, 640 - fpu_container.center[1].X - 95, fpu_container.center[1].Y - 95,300,260);
+                g.DrawImage(Resources.Bang, 640 - fpu_container.center[1].X - 115, fpu_container.center[1].Y - 115,300,260);
             if (fpu_container.have_right_punch)
-                g.DrawImage(Resources.Bang, 640 - fpu_container.center[0].X - 95, fpu_container.center[0].Y - 95, 300, 260);
+                g.DrawImage(Resources.Bang, 640 - fpu_container.center[0].X - 115, fpu_container.center[0].Y - 115, 300, 260);
             //Draw left hand
             if(fpu_container.have_left)
             myplayer.drawLeft(g,640-fpu_container.center[1].X-80,fpu_container.center[1].Y-80);

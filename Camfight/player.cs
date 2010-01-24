@@ -82,12 +82,14 @@ namespace Camfight
                 if (this.x > 300) this.x = 300;
             }
         }
-        public void isHit(int sector)
+        public bool isHit(int sector)
         {
             if ((x + 170) / (640 / 5) == sector / 3)
             {
                 getHurt((3 - (sector % 3)) * 5);
+                return true;
             }
+            return false;
         }
         public void getHurt(int damage)
         {
