@@ -239,6 +239,7 @@ namespace Camfight
         private Thread fpu_thr;
         private void GameStart(packet receiveobj)
         {
+            big_move_q = new Queue<int>(30);
             big_flash = 0;
             hit_flash = 0;
             enemyname = receiveobj.Name;
@@ -377,7 +378,14 @@ namespace Camfight
             {
                 big_flash = 40;
                 enemy.getHurt(big_damage);
-                myplayer.Big_used = true;
+                
+                if (gamestate == GameState.SINGLE && stage == 3)
+                {
+                }
+                else
+                {
+                    myplayer.Big_used = true;
+                }
             }
             else
             {
@@ -410,6 +418,8 @@ namespace Camfight
             }
         }
 
+
+        private int stage;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if(gamestate==GameState.GAME)
@@ -446,6 +456,7 @@ namespace Camfight
                     }
                     else if (menuIndex == 1)
                     {
+                        stage = 0;
                         single_reset();
                         gamestate = GameState.SINGLE;
                     }
@@ -477,11 +488,23 @@ namespace Camfight
                     }
                 }
             }
+            else if (gamestate == GameState.SINGLE)
+            {
+                if (e.KeyData == Keys.Escape)
+                {
+                    quit();
+                }
+                else if (e.KeyData == Keys.Enter)
+                {
+                    enemy.getHurt(100);
+                }
+            }
         }
 
         private void single_reset()
         {
-            enemyname = "Bot";
+            big_move_q = new Queue<int>(30);
+            enemyname = "Stage " + (stage + 1).ToString();
             Random rd = new Random();
             LoadingEnemyContent(new packet("", "", "", 0, (rd.Next() % 4), 0, false));
             //Application.Idle += new EventHandler(ProcessFrame);
@@ -495,6 +518,21 @@ namespace Camfight
 
             username = "Practice";
             LoadingContent(new packet("", "", "", (rd.Next() % 4), 0, 0, false));
+
+            switch (stage)
+            {
+                case 0:
+                    break;
+                case 1:
+                    enemy.x = 0;
+                    break;
+                case 2:
+                    enemy.x = 300;
+                    break;
+                case 3:
+                    myplayer.getHurt(100 - big_threshold + 1);
+                    break;
+            }
         }
 
         private void LoginInputControl(KeyEventArgs e)
@@ -628,7 +666,15 @@ namespace Camfight
             }
             if (big_flash == 0 && hit_flash == 0)
             {
-                gamestate = GameState.END;
+                if (gamestate == GameState.SINGLE && stage<3)
+                {
+                    stage++;
+                    single_reset();
+                }
+                else
+                {
+                    gamestate = GameState.END;
+                }
             }
         }
     }
