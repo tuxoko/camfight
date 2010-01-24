@@ -23,6 +23,8 @@ using Emgu.Util;
 using Emgu.CV.CvEnum;
 using Hist;
 
+using System.Media;
+
 namespace Camfight
 {
     public partial class Form1 : Form
@@ -37,6 +39,12 @@ namespace Camfight
             END=5,
             SINGLE=6
         };
+
+        SoundPlayer soundTitle = new SoundPlayer(Resources.title);
+        SoundPlayer soundHurt = new SoundPlayer(Resources.hurt);
+        SoundPlayer soundPunch = new SoundPlayer(Resources.punch);
+        SoundPlayer soundDie = new SoundPlayer(Resources.die);
+        private bool play_title=true;
 
         //player object
         private Player myplayer=null;
@@ -306,6 +314,7 @@ namespace Camfight
                 big_flash = 40;
                 myplayer.getHurt(big_damage);
                 enemy.Big_used = true;
+                soundPunch.Play();
             }
             else
             {
@@ -314,12 +323,14 @@ namespace Camfight
                 {
                     ishit=myplayer.isHit((receiveobj.Sector & 0xF00) >> 8);
                     i = 2;
+                    soundPunch.Play();
                 }
                 //left
                 if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
                 {
                     ishit=myplayer.isHit((receiveobj.Sector & 0xF0) >> 4);
                     i = 1;
+                    soundPunch.Play();
                 }
             }
             int face_sec = receiveobj.Sector & 0xF;
@@ -349,6 +360,7 @@ namespace Camfight
             {
                // this.Invoke(new InvokeFunction(this.quit), new object[] { });
                 this.Invoke(new InvokeFunction3(this.GameOver), new object[] {"l" });
+                soundDie.Play();
             }
 
             aniMutex.WaitOne();
@@ -378,6 +390,7 @@ namespace Camfight
             {
                 big_flash = 40;
                 enemy.getHurt(big_damage);
+                soundPunch.Play();
                 
                 if (gamestate == GameState.SINGLE && stage == 3)
                 {
@@ -397,6 +410,7 @@ namespace Camfight
                     else if (sector1 % 3 == 2) sector1 -= 2;
                     enemy.isHit(sector1);
                     i = 2;
+                    soundPunch.Play();
                 }
                 //left
                 if ((receiveobj.Sector & 0xF00) >> 8 == 0xF)
@@ -406,6 +420,7 @@ namespace Camfight
                     else if (sector1 % 3 == 2) sector1 -= 2;
                     enemy.isHit(sector1);
                     i = 1;
+                    soundPunch.Play();
                 }
             }
 
@@ -415,6 +430,7 @@ namespace Camfight
             {
             //    this.Invoke(new InvokeFunction(this.quit), new object[] { });
                 this.Invoke(new InvokeFunction3(this.GameOver), new object[] { "w" });
+                soundDie.Play();
             }
         }
 
@@ -449,6 +465,8 @@ namespace Camfight
                 }
                 else if (e.KeyData == Keys.Enter)
                 {
+                    soundTitle.Stop();
+                    play_title = true;
                     if (menuIndex == 0)
                     {
                         gamestate=GameState.INTERNET;

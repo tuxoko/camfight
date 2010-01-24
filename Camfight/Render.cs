@@ -26,6 +26,11 @@ namespace Camfight
         {
             if (gamestate == GameState.TITLE)
             {
+                if (play_title)
+                {
+                    soundTitle.Play();
+                    play_title = false;
+                }
                 RenderTitle();
             }
             else if (gamestate == GameState.MENU)

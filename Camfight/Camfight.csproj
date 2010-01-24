@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E45E0287-F12E-4AD4-82A9-AC422C3ABB4C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -115,149 +115,161 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1.png" />
+    <EmbeddedResource Include="Resources\player1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_left.png" />
+    <EmbeddedResource Include="Resources\player1_left.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_left_lh.png" />
+    <EmbeddedResource Include="Resources\player1_left_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_left_rh.png" />
+    <EmbeddedResource Include="Resources\player1_left_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_lh.png" />
+    <EmbeddedResource Include="Resources\player1_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_rh.png" />
+    <EmbeddedResource Include="Resources\player1_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_right.png" />
+    <EmbeddedResource Include="Resources\player1_right.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_right_lh.png" />
+    <EmbeddedResource Include="Resources\player1_right_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_right_rh.png" />
+    <EmbeddedResource Include="Resources\player1_right_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2.png" />
+    <EmbeddedResource Include="Resources\player2.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_left.png" />
+    <EmbeddedResource Include="Resources\player2_left.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_left_lh.png" />
+    <EmbeddedResource Include="Resources\player2_left_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_left_rh.png" />
+    <EmbeddedResource Include="Resources\player2_left_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_lh.png" />
+    <EmbeddedResource Include="Resources\player2_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_rh.png" />
+    <EmbeddedResource Include="Resources\player2_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_right.png" />
+    <EmbeddedResource Include="Resources\player2_right.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_right_lh.png" />
+    <EmbeddedResource Include="Resources\player2_right_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player2_right_rh.png" />
+    <EmbeddedResource Include="Resources\player2_right_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\south-park-goes-online.jpg" />
+    <EmbeddedResource Include="Resources\south-park-goes-online.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SPback.png" />
+    <EmbeddedResource Include="Resources\SPback.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_1.png" />
+    <EmbeddedResource Include="Resources\player1_1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player1_2.png" />
+    <EmbeddedResource Include="Resources\player1_2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\app.manifest" />
-    <None Include="Resources\player1_3.png" />
+    <EmbeddedResource Include="Resources\player1_3.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\H1.png" />
+    <EmbeddedResource Include="Resources\H1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\H4.png" />
+    <EmbeddedResource Include="Resources\H4.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\H3.png" />
+    <EmbeddedResource Include="Resources\H3.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\H2.png" />
+    <EmbeddedResource Include="Resources\H2.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Bang.png" />
+    <EmbeddedResource Include="Resources\Bang.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\BGL.png" />
+    <EmbeddedResource Include="Resources\BGL.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\BGR.png" />
+    <EmbeddedResource Include="Resources\BGR.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\playe3_right_rh.png" />
+    <EmbeddedResource Include="Resources\playe3_right_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player3.png" />
+    <EmbeddedResource Include="Resources\player3.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player3_left.png" />
+    <EmbeddedResource Include="Resources\player3_left.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player3_left_lh.png" />
+    <EmbeddedResource Include="Resources\player3_left_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player3_left_rh.png" />
+    <EmbeddedResource Include="Resources\player3_left_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player3_rh.png" />
+    <EmbeddedResource Include="Resources\player3_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player3_right.png" />
+    <EmbeddedResource Include="Resources\player3_right.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player3_right_lh.png" />
+    <EmbeddedResource Include="Resources\player3_right_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player_lh.png" />
+    <EmbeddedResource Include="Resources\player_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4.png" />
+    <EmbeddedResource Include="Resources\player4.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_left.png" />
+    <EmbeddedResource Include="Resources\player4_left.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_left_lh.png" />
+    <EmbeddedResource Include="Resources\player4_left_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_left_rh.png" />
+    <EmbeddedResource Include="Resources\player4_left_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_lh.png" />
+    <EmbeddedResource Include="Resources\player4_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_rh.png" />
+    <EmbeddedResource Include="Resources\player4_rh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_right.png" />
+    <EmbeddedResource Include="Resources\player4_right.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_right_lh.png" />
+    <EmbeddedResource Include="Resources\player4_right_lh.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player4_right_rh.png" />
+    <EmbeddedResource Include="Resources\player4_right_rh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\die.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\hurt.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\punch.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\title.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
