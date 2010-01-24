@@ -483,7 +483,7 @@ namespace Camfight
         {
             enemyname = "Bot";
             Random rd = new Random();
-            LoadingEnemyContent(new packet("", "", "", 0, (rd.Next() % 2), 0, false));
+            LoadingEnemyContent(new packet("", "", "", 0, (rd.Next() % 4), 0, false));
             //Application.Idle += new EventHandler(ProcessFrame);
             fpu_thr = new Thread(new ThreadStart(ProcessFrame));
             fpu_thr.Start();
@@ -494,7 +494,7 @@ namespace Camfight
             hit_flash = 0;
 
             username = "Practice";
-            LoadingContent(new packet("", "", "", (rd.Next() % 2), 0, 0, false));
+            LoadingContent(new packet("", "", "", (rd.Next() % 4), 0, 0, false));
         }
 
         private void LoginInputControl(KeyEventArgs e)
