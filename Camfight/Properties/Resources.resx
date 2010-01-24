@@ -208,4 +208,58 @@
   <data name="H4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\h4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="player3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player3_left.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_left_lh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player3_left_lh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_left_rh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player3_left_rh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_lh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player_lh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_rh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player3_rh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player3_right.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_right_lh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player3_right_lh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player3_right_rh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\playe3_right_rh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_left.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_left_lh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_left_lh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_left_rh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_left_rh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_lh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_lh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_rh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_rh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_right.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_right_lh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_right_lh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player4_right_rh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\player4_right_rh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

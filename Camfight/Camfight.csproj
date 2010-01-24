@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E45E0287-F12E-4AD4-82A9-AC422C3ABB4C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -204,6 +204,60 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\BGR.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\playe3_right_rh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player3_left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player3_left_lh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player3_left_rh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player3_rh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player3_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player3_right_lh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player_lh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_left_lh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_left_rh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_lh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_rh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_right_lh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player4_right_rh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
