@@ -42,8 +42,16 @@ namespace Camfight
             }
             else if (gamestate == GameState.GAME)
             {
-
-                playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
+                if (myplayer.Life > 0 && enemy.Life > 0)
+                {
+                    playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
+                }
+                else
+                {
+                    if (enemy.Life>0 && myplayer.Life<=0) GameOver("l");
+                    else if (enemy.Life<=0 && myplayer.Life>0) GameOver("w");
+                    else GameOver("t");
+                }
 
                 if (playtime == 0)
                 {
@@ -51,28 +59,35 @@ namespace Camfight
                     else if (enemy.Life < myplayer.Life) GameOver("w");
                     else GameOver("t");
                 }
-                else
-                {
+
                     aniMutex.WaitOne();
                     Render(playstate);
                     aniMutex.ReleaseMutex();
-                }
+
             }
             else if (gamestate == GameState.SINGLE)
             {
-                playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
+                if (myplayer.Life > 0 && enemy.Life > 0)
+                {
+                    playtime = 120 - (int)sw.ElapsedMilliseconds / 1000;
+                }
+                else
+                {
+                    if (enemy.Life > 0 && myplayer.Life <= 0) GameOver("l");
+                    else if (enemy.Life <= 0 && myplayer.Life > 0) GameOver("w");
+                    else GameOver("t");
+                }
 
                 if (playtime == 0)
                 {
                     fpu_thr.Abort();
                     single_reset();
                 }
-                else
-                {
+
                     aniMutex.WaitOne();
                     Render(playstate);
                     aniMutex.ReleaseMutex();
-                }
+
             }
             else if (gamestate == GameState.END)
             {

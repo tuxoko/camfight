@@ -357,7 +357,7 @@ namespace Camfight
 
         //for big
         private int big_flash=0;
-        private int big_damage = 30;
+        private int big_damage = 40;
         private int big_threshold = 30;
         //for hit
         private int hit_flash = 0;
@@ -613,6 +613,7 @@ namespace Camfight
                 fpu_thr = null;
             }
             catch { }
+
             if (cmd == "w")
             {
                 gameoverIndex = 0;
@@ -625,7 +626,10 @@ namespace Camfight
             {
                 gameoverIndex = 2 ;
             }
-            gamestate = GameState.END;
+            if (big_flash == 0 && hit_flash == 0)
+            {
+                gamestate = GameState.END;
+            }
         }
     }
 }
