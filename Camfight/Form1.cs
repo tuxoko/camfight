@@ -155,7 +155,7 @@ namespace Camfight
         {
             try
             {
-                IPAddress serverip = IPAddress.Parse("140.112.18.202");
+                IPAddress serverip = IPAddress.Parse("140.112.18.203");
                 IPEndPoint serverhost = new IPEndPoint(serverip, 800);
                 _tcpl = new TcpClient();
                 _tcpl.Connect(serverhost);
