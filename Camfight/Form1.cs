@@ -517,6 +517,10 @@ namespace Camfight
                     enemy.getHurt(100);
                 }
             }
+            if (e.KeyData == Keys.B)
+            {
+                show_back = !show_back;
+            }
         }
 
         private void single_reset()

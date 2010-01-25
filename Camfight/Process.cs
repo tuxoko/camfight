@@ -26,6 +26,9 @@ namespace Camfight
 
         private Mutex fpu_mutex = new Mutex();
         private FPUContainer fpu_container = new FPUContainer();
+
+        private bool show_back = false;
+
         private void ProcessFrame()
         {
             while (true)
@@ -82,7 +85,25 @@ namespace Camfight
                     }
                 }
 
-                pictureBox1.Image = FPU.backproject.Bitmap;
+                frame.Draw(FPU.face, new Bgr(Color.Blue), 2);
+                if (FPU.have_left)
+                {
+                    frame.Draw(FPU.left, new Bgr(Color.Green), 2);
+                }
+                if (FPU.have_right)
+                {
+                    frame.Draw(FPU.right, new Bgr(Color.Yellow), 2);
+                }
+                frame = frame.Flip(FLIP.HORIZONTAL);
+
+                if (show_back)
+                {
+                    pictureBox1.Image = FPU.backproject.Bitmap;
+                }
+                else
+                {
+                    pictureBox1.Image = frame.Bitmap;
+                }
                 this.Invoke(new InvokeFunction(pictureBox1.Refresh));
                 this.Invoke(new InvokeFunction(pictureBox1.Show));
                 //pictureBox1.Refresh();

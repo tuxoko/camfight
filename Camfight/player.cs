@@ -70,7 +70,7 @@ namespace Camfight
 
         public void update(int sector)
         {
-            int v=10;
+            int v=20;
             if (sector < 6)
             {
                 this.x -= v;
